@@ -6,24 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="HandheldFriendly" content="True">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    <meta name="description" content="Machine Learning &amp; Natural Language ProcessingWelcome to the ML&#x2F;NLP section of my blog. Here you’ll find articles about:  Multimodal AI Approaches - Comparing different methods for handling m">
+    <meta name="description" content="Evaluation Metrics for Multimodal and LLM SystemsEvaluating large language models (LLMs) and multimodal systems requires a diverse set of metrics to capture their performance across different tasks an">
 <meta property="og:type" content="website">
-<meta property="og:title" content="ML&#x2F;NLP Articles">
-<meta property="og:url" content="https://github.com/BufferHund/bufferhund.github.io/mlnlp/index.html">
+<meta property="og:title" content="Evaluation Metrics for Multimodal and LLM Systems">
+<meta property="og:url" content="https://github.com/BufferHund/bufferhund.github.io/mlnlp/llm-evaluation-metrics.html">
 <meta property="og:site_name" content="Zhaokun&#39;s Space | Blog site (Currently in maintenance mode, repository is private, will be public again soon)">
-<meta property="og:description" content="Machine Learning &amp; Natural Language ProcessingWelcome to the ML&#x2F;NLP section of my blog. Here you’ll find articles about:  Multimodal AI Approaches - Comparing different methods for handling m">
+<meta property="og:description" content="Evaluation Metrics for Multimodal and LLM SystemsEvaluating large language models (LLMs) and multimodal systems requires a diverse set of metrics to capture their performance across different tasks an">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2025-06-19T22:18:36.000Z">
-<meta property="article:modified_time" content="2025-06-19T23:19:47.372Z">
+<meta property="article:published_time" content="2025-04-22T08:50:00.000Z">
+<meta property="article:modified_time" content="2025-06-19T23:19:46.816Z">
 <meta property="article:author" content="Zhaokun">
-<meta property="article:tag" content="Full Stack">
-<meta property="article:tag" content="Web Development">
-<meta property="article:tag" content="UI&#x2F;UX">
-<meta property="article:tag" content="Machine Learning">
-<meta property="article:tag" content="NLP">
+<meta property="article:tag" content="Evaluation">
+<meta property="article:tag" content="Metrics">
+<meta property="article:tag" content="Multimodal">
 <meta property="article:tag" content="LLM">
-<meta property="article:tag" content="AI Engineering">
-<meta property="article:tag" content="Developer Productivity">
 <meta name="twitter:card" content="summary">
     
     
@@ -44,7 +40,7 @@
       
     
     <!-- title -->
-    <title>ML/NLP Articles</title>
+    <title>Evaluation Metrics for Multimodal and LLM Systems</title>
     <!-- async scripts -->
     <!-- Google Analytics -->
 
@@ -110,18 +106,32 @@
 
   <div class="content" itemprop="articleBody">
       
-          <h1 id="Machine-Learning-Natural-Language-Processing"><a href="#Machine-Learning-Natural-Language-Processing" class="headerlink" title="Machine Learning &amp; Natural Language Processing"></a>Machine Learning &amp; Natural Language Processing</h1><p>Welcome to the ML&#x2F;NLP section of my blog. Here you’ll find articles about:</p>
-<ul>
-<li><strong>Multimodal AI Approaches</strong> - Comparing different methods for handling multiple data types</li>
-<li><strong>Data Contamination in LLMs</strong> - Understanding and preventing training data pollution</li>
-<li><strong>LLM Fine-tuning Strategies</strong> - Techniques for adapting large language models</li>
-<li><strong>Model Quantization</strong> - Methods for reducing model size while maintaining performance</li>
-<li><strong>RAG Applications</strong> - Retrieval-Augmented Generation in practice</li>
-<li><strong>MoE and MCP Technologies</strong> - Mixture of Experts and Model Context Protocol</li>
-<li><strong>LLM Evaluation Metrics</strong> - How to measure and compare model performance</li>
-<li><strong>AI in Web Development</strong> - Integrating AI technologies into modern web applications</li>
+          <h1 id="Evaluation-Metrics-for-Multimodal-and-LLM-Systems"><a href="#Evaluation-Metrics-for-Multimodal-and-LLM-Systems" class="headerlink" title="Evaluation Metrics for Multimodal and LLM Systems"></a>Evaluation Metrics for Multimodal and LLM Systems</h1><p>Evaluating large language models (LLMs) and multimodal systems requires a diverse set of metrics to capture their performance across different tasks and modalities. This article reviews key evaluation metrics and best practices.</p>
+<h2 id="1-Text-Generation-Metrics"><a href="#1-Text-Generation-Metrics" class="headerlink" title="1. Text Generation Metrics"></a>1. Text Generation Metrics</h2><ul>
+<li><strong>BLEU, ROUGE, METEOR</strong>: Measure n-gram overlap between generated and reference texts.</li>
+<li><strong>BERTScore</strong>: Uses contextual embeddings for semantic similarity.</li>
+<li><strong>Perplexity</strong>: Measures how well a model predicts a sample.</li>
 </ul>
-<p>Explore the articles below to dive deeper into these fascinating topics in machine learning and natural language processing.</p>
+<h2 id="2-Multimodal-Metrics"><a href="#2-Multimodal-Metrics" class="headerlink" title="2. Multimodal Metrics"></a>2. Multimodal Metrics</h2><ul>
+<li><strong>Image-Text Retrieval</strong>: Recall@K, Mean Reciprocal Rank (MRR).</li>
+<li><strong>Visual Question Answering (VQA)</strong>: Accuracy, CIDEr, SPICE.</li>
+<li><strong>Multimodal Classification</strong>: F1-score, accuracy, AUC.</li>
+</ul>
+<h2 id="3-Human-Evaluation"><a href="#3-Human-Evaluation" class="headerlink" title="3. Human Evaluation"></a>3. Human Evaluation</h2><ul>
+<li><strong>Fluency</strong>: Is the output natural and grammatically correct?</li>
+<li><strong>Relevance</strong>: Does the output address the prompt or question?</li>
+<li><strong>Faithfulness</strong>: Is the output factually correct and grounded in the input?</li>
+</ul>
+<h2 id="4-Robustness-and-Bias-Metrics"><a href="#4-Robustness-and-Bias-Metrics" class="headerlink" title="4. Robustness and Bias Metrics"></a>4. Robustness and Bias Metrics</h2><ul>
+<li><strong>Adversarial Robustness</strong>: Performance under perturbed or adversarial inputs.</li>
+<li><strong>Bias and Fairness</strong>: Metrics for gender, race, and other biases (e.g., StereoSet, CrowS-Pairs).</li>
+</ul>
+<h2 id="Best-Practices"><a href="#Best-Practices" class="headerlink" title="Best Practices"></a>Best Practices</h2><ul>
+<li>Use a combination of automatic and human evaluations.</li>
+<li>Regularly benchmark against public datasets.</li>
+<li>Report confidence intervals and statistical significance.</li>
+</ul>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Comprehensive evaluation is essential for trustworthy LLM and multimodal system deployment. By leveraging diverse metrics, practitioners can better understand model strengths, weaknesses, and real-world readiness. </p>
 
         
   </div>

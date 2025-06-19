@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Web Performance Optimization: A Complete Guide for 2024Web performance has become a critical factor in user experience, SEO rankings, and business success. With users expecting fast-loading websites a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Web Performance Optimization: A Complete Guide for 2024">
+<meta property="og:url" content="https://github.com/BufferHund/bufferhund.github.io/webdev/web-performance-optimization.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Space | Blog site (Currently in maintenance mode, repository is private, will be public again soon)">
+<meta property="og:description" content="Web Performance Optimization: A Complete Guide for 2024Web performance has become a critical factor in user experience, SEO rankings, and business success. With users expecting fast-loading websites a">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-03T15:20:00.000Z">
+<meta property="article:modified_time" content="2025-06-19T23:19:47.162Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="Performance">
+<meta property="article:tag" content="Optimization">
+<meta property="article:tag" content="Web Development">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/BufferHund/bufferhund.github.io/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/BufferHund/bufferhund.github.io/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/BufferHund/bufferhund.github.io/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Web Performance Optimization: A Complete Guide for 2024</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/BufferHund/bufferhund.github.io/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+    <div class="content index py4 ">
+        
+          <header id="header">
+  <a class="u-url u-uid" href="/BufferHund/bufferhund.github.io/">
+  
+    
+      <img id="logo" alt class="u-logo" src="/BufferHund/bufferhund.github.io/images/logo.png" />
+    
+  
+    <div id="title">
+      <h1 class="p-name">Zhaokun&#39;s Space | Blog site (Currently in maintenance mode, repository is private, will be public again soon)</h1>
+    </div>
+  </a>
+  <div id="nav">
+    <ul>
+      <li class="icon">
+        <a href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-2x"></i></a>
+      </li>
+      <!--
+     --><li><a href="/BufferHund/bufferhund.github.io/">Home</a></li><!--
+   --><!--
+     --><li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li><!--
+   --><!--
+     --><li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li><!--
+   --><!--
+     --><li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li><!--
+   --><!--
+     --><li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li><!--
+   --><!--
+     --><li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li><!--
+   --><!--
+     --><li><a href="https://github.com/BufferHund">Projects</a></li><!--
+   -->
+    </ul>
+  </div>
+</header>
+
+        
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+  
+
+  <div class="content" itemprop="articleBody">
+      
+          <h1 id="Web-Performance-Optimization-A-Complete-Guide-for-2024"><a href="#Web-Performance-Optimization-A-Complete-Guide-for-2024" class="headerlink" title="Web Performance Optimization: A Complete Guide for 2024"></a>Web Performance Optimization: A Complete Guide for 2024</h1><p>Web performance has become a critical factor in user experience, SEO rankings, and business success. With users expecting fast-loading websites and search engines prioritizing performance metrics, optimizing your web applications is more important than ever.</p>
+<h2 id="Core-Web-Vitals-The-New-Performance-Standards"><a href="#Core-Web-Vitals-The-New-Performance-Standards" class="headerlink" title="Core Web Vitals: The New Performance Standards"></a>Core Web Vitals: The New Performance Standards</h2><p>Google’s Core Web Vitals have become the gold standard for measuring web performance, focusing on three key metrics that directly impact user experience.</p>
+<h3 id="Largest-Contentful-Paint-LCP"><a href="#Largest-Contentful-Paint-LCP" class="headerlink" title="Largest Contentful Paint (LCP)"></a>Largest Contentful Paint (LCP)</h3><p><strong>Target: &lt; 2.5 seconds</strong></p>
+<p>LCP measures the time it takes for the largest content element to become visible within the viewport.</p>
+<h4 id="Optimization-Strategies"><a href="#Optimization-Strategies" class="headerlink" title="Optimization Strategies:"></a>Optimization Strategies:</h4><ul>
+<li><strong>Image Optimization</strong>: Use WebP format, implement lazy loading</li>
+<li><strong>Critical Resources</strong>: Prioritize above-the-fold content</li>
+<li><strong>Server Response</strong>: Optimize server response times</li>
+<li><strong>Resource Hints</strong>: Use preload, prefetch, and preconnect</li>
+</ul>
+<h3 id="First-Input-Delay-FID"><a href="#First-Input-Delay-FID" class="headerlink" title="First Input Delay (FID)"></a>First Input Delay (FID)</h3><p><strong>Target: &lt; 100 milliseconds</strong></p>
+<p>FID measures the time from when a user first interacts with your page to when the browser responds.</p>
+<h4 id="Optimization-Strategies-1"><a href="#Optimization-Strategies-1" class="headerlink" title="Optimization Strategies:"></a>Optimization Strategies:</h4><ul>
+<li><strong>Code Splitting</strong>: Break JavaScript into smaller chunks</li>
+<li><strong>Minification</strong>: Reduce JavaScript bundle sizes</li>
+<li><strong>Third-party Scripts</strong>: Defer non-critical third-party scripts</li>
+<li><strong>Web Workers</strong>: Move heavy computations to background threads</li>
+</ul>
+<h3 id="Cumulative-Layout-Shift-CLS"><a href="#Cumulative-Layout-Shift-CLS" class="headerlink" title="Cumulative Layout Shift (CLS)"></a>Cumulative Layout Shift (CLS)</h3><p><strong>Target: &lt; 0.1</strong></p>
+<p>CLS measures the visual stability of your page, quantifying unexpected layout shifts.</p>
+<h4 id="Optimization-Strategies-2"><a href="#Optimization-Strategies-2" class="headerlink" title="Optimization Strategies:"></a>Optimization Strategies:</h4><ul>
+<li><strong>Image Dimensions</strong>: Always specify width and height attributes</li>
+<li><strong>Font Loading</strong>: Use font-display: swap</li>
+<li><strong>Ad Placeholders</strong>: Reserve space for dynamic content</li>
+<li><strong>CSS-in-JS</strong>: Avoid layout shifts from dynamic styling</li>
+</ul>
+<h2 id="Frontend-Performance-Optimization"><a href="#Frontend-Performance-Optimization" class="headerlink" title="Frontend Performance Optimization"></a>Frontend Performance Optimization</h2><h3 id="JavaScript-Optimization"><a href="#JavaScript-Optimization" class="headerlink" title="JavaScript Optimization"></a>JavaScript Optimization</h3><h4 id="Bundle-Optimization"><a href="#Bundle-Optimization" class="headerlink" title="Bundle Optimization:"></a>Bundle Optimization:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Webpack configuration for code splitting</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">optimization</span>: &#123;</span><br><span class="line">    <span class="attr">splitChunks</span>: &#123;</span><br><span class="line">      <span class="attr">chunks</span>: <span class="string">&#x27;all&#x27;</span>,</span><br><span class="line">      <span class="attr">cacheGroups</span>: &#123;</span><br><span class="line">        <span class="attr">vendor</span>: &#123;</span><br><span class="line">          <span class="attr">test</span>: <span class="regexp">/[\\/]node_modules[\\/]/</span>,</span><br><span class="line">          <span class="attr">name</span>: <span class="string">&#x27;vendors&#x27;</span>,</span><br><span class="line">          <span class="attr">chunks</span>: <span class="string">&#x27;all&#x27;</span>,</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;,</span><br><span class="line">    &#125;,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Tree-Shaking"><a href="#Tree-Shaking" class="headerlink" title="Tree Shaking:"></a>Tree Shaking:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ES6 modules enable tree shaking</span></span><br><span class="line"><span class="keyword">import</span> &#123; debounce &#125; <span class="keyword">from</span> <span class="string">&#x27;lodash-es&#x27;</span>; <span class="comment">// Only imports debounce</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Lazy-Loading"><a href="#Lazy-Loading" class="headerlink" title="Lazy Loading:"></a>Lazy Loading:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// React lazy loading example</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">LazyComponent</span> = <span class="title class_">React</span>.<span class="title function_">lazy</span>(<span class="function">() =&gt;</span> <span class="keyword">import</span>(<span class="string">&#x27;./LazyComponent&#x27;</span>));</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">App</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> (</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">Suspense</span> <span class="attr">fallback</span>=<span class="string">&#123;</span>&lt;<span class="attr">div</span>&gt;</span>Loading...<span class="tag">&lt;/<span class="name">div</span>&gt;</span>&#125;&gt;</span></span><br><span class="line"><span class="language-xml">      <span class="tag">&lt;<span class="name">LazyComponent</span> /&gt;</span></span></span><br><span class="line"><span class="language-xml">    <span class="tag">&lt;/<span class="name">Suspense</span>&gt;</span></span></span><br><span class="line">  );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="CSS-Optimization"><a href="#CSS-Optimization" class="headerlink" title="CSS Optimization"></a>CSS Optimization</h3><h4 id="Critical-CSS-Extraction"><a href="#Critical-CSS-Extraction" class="headerlink" title="Critical CSS Extraction:"></a>Critical CSS Extraction:</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Inline critical CSS */</span></span><br><span class="line">&lt;style&gt;</span><br><span class="line">  <span class="selector-class">.header</span> &#123; <span class="attribute">background</span>: <span class="number">#fff</span>; &#125;</span><br><span class="line">  <span class="selector-class">.hero</span> &#123; <span class="attribute">padding</span>: <span class="number">2rem</span>; &#125;</span><br><span class="line">&lt;/style&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Load non-critical CSS asynchronously */</span></span><br><span class="line">&lt;link rel=&quot;preload&quot; href=&quot;styles<span class="selector-class">.css</span>&quot; as=&quot;style&quot; onload=&quot;this<span class="selector-class">.onload</span>=null;this<span class="selector-class">.rel</span>=&#x27;stylesheet&#x27;&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CSS-in-JS-Performance"><a href="#CSS-in-JS-Performance" class="headerlink" title="CSS-in-JS Performance:"></a>CSS-in-JS Performance:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Use CSS-in-JS with performance optimizations</span></span><br><span class="line"><span class="keyword">const</span> styled = styled.<span class="property">createGlobalStyle</span><span class="string">`</span></span><br><span class="line"><span class="string">  .optimized-component &#123;</span></span><br><span class="line"><span class="string">    will-change: transform;</span></span><br><span class="line"><span class="string">    contain: layout style paint;</span></span><br><span class="line"><span class="string">  &#125;</span></span><br><span class="line"><span class="string">`</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Image-Optimization"><a href="#Image-Optimization" class="headerlink" title="Image Optimization"></a>Image Optimization</h3><h4 id="Modern-Image-Formats"><a href="#Modern-Image-Formats" class="headerlink" title="Modern Image Formats:"></a>Modern Image Formats:</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">picture</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">srcset</span>=<span class="string">&quot;image.webp&quot;</span> <span class="attr">type</span>=<span class="string">&quot;image/webp&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">source</span> <span class="attr">srcset</span>=<span class="string">&quot;image.avif&quot;</span> <span class="attr">type</span>=<span class="string">&quot;image/avif&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;image.jpg&quot;</span> <span class="attr">alt</span>=<span class="string">&quot;Description&quot;</span> <span class="attr">loading</span>=<span class="string">&quot;lazy&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">picture</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Responsive-Images"><a href="#Responsive-Images" class="headerlink" title="Responsive Images:"></a>Responsive Images:</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> </span></span><br><span class="line"><span class="tag">  <span class="attr">srcset</span>=<span class="string">&quot;small.jpg 300w, medium.jpg 600w, large.jpg 900w&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">sizes</span>=<span class="string">&quot;(max-width: 600px) 300px, (max-width: 900px) 600px, 900px&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">src</span>=<span class="string">&quot;fallback.jpg&quot;</span> </span></span><br><span class="line"><span class="tag">  <span class="attr">alt</span>=<span class="string">&quot;Responsive image&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Backend-Performance-Optimization"><a href="#Backend-Performance-Optimization" class="headerlink" title="Backend Performance Optimization"></a>Backend Performance Optimization</h2><h3 id="Database-Optimization"><a href="#Database-Optimization" class="headerlink" title="Database Optimization"></a>Database Optimization</h3><h4 id="Query-Optimization"><a href="#Query-Optimization" class="headerlink" title="Query Optimization:"></a>Query Optimization:</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Use indexes for frequently queried columns</span></span><br><span class="line"><span class="keyword">CREATE</span> INDEX idx_user_email <span class="keyword">ON</span> users(email);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- Optimize complex queries</span></span><br><span class="line">EXPLAIN <span class="keyword">SELECT</span> u.name, p.title </span><br><span class="line"><span class="keyword">FROM</span> users u </span><br><span class="line"><span class="keyword">INNER</span> <span class="keyword">JOIN</span> posts p <span class="keyword">ON</span> u.id <span class="operator">=</span> p.user_id </span><br><span class="line"><span class="keyword">WHERE</span> u.active <span class="operator">=</span> <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Connection-Pooling"><a href="#Connection-Pooling" class="headerlink" title="Connection Pooling:"></a>Connection Pooling:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Node.js with connection pooling</span></span><br><span class="line"><span class="keyword">const</span> pool = mysql.<span class="title function_">createPool</span>(&#123;</span><br><span class="line">  <span class="attr">host</span>: <span class="string">&#x27;localhost&#x27;</span>,</span><br><span class="line">  <span class="attr">user</span>: <span class="string">&#x27;user&#x27;</span>,</span><br><span class="line">  <span class="attr">password</span>: <span class="string">&#x27;password&#x27;</span>,</span><br><span class="line">  <span class="attr">database</span>: <span class="string">&#x27;database&#x27;</span>,</span><br><span class="line">  <span class="attr">connectionLimit</span>: <span class="number">10</span>,</span><br><span class="line">  <span class="attr">acquireTimeout</span>: <span class="number">60000</span>,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Caching-Strategies"><a href="#Caching-Strategies" class="headerlink" title="Caching Strategies"></a>Caching Strategies</h3><h4 id="Redis-Caching"><a href="#Redis-Caching" class="headerlink" title="Redis Caching:"></a>Redis Caching:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Express.js with Redis caching</span></span><br><span class="line">app.<span class="title function_">get</span>(<span class="string">&#x27;/api/users/:id&#x27;</span>, <span class="title function_">async</span> (req, res) =&gt; &#123;</span><br><span class="line">  <span class="keyword">const</span> cacheKey = <span class="string">`user:<span class="subst">$&#123;req.params.id&#125;</span>`</span>;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Check cache first</span></span><br><span class="line">  <span class="keyword">const</span> cached = <span class="keyword">await</span> redis.<span class="title function_">get</span>(cacheKey);</span><br><span class="line">  <span class="keyword">if</span> (cached) &#123;</span><br><span class="line">    <span class="keyword">return</span> res.<span class="title function_">json</span>(<span class="title class_">JSON</span>.<span class="title function_">parse</span>(cached));</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Fetch from database</span></span><br><span class="line">  <span class="keyword">const</span> user = <span class="keyword">await</span> <span class="title class_">User</span>.<span class="title function_">findById</span>(req.<span class="property">params</span>.<span class="property">id</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Cache for 1 hour</span></span><br><span class="line">  <span class="keyword">await</span> redis.<span class="title function_">setex</span>(cacheKey, <span class="number">3600</span>, <span class="title class_">JSON</span>.<span class="title function_">stringify</span>(user));</span><br><span class="line">  </span><br><span class="line">  res.<span class="title function_">json</span>(user);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="CDN-Implementation"><a href="#CDN-Implementation" class="headerlink" title="CDN Implementation:"></a>CDN Implementation:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Serve static assets through CDN</span></span><br><span class="line"><span class="keyword">const</span> cdnUrl = process.<span class="property">env</span>.<span class="property">CDN_URL</span> || <span class="string">&#x27;https://cdn.example.com&#x27;</span>;</span><br><span class="line"></span><br><span class="line">app.<span class="title function_">use</span>(<span class="string">&#x27;/static&#x27;</span>, express.<span class="title function_">static</span>(<span class="string">&#x27;public&#x27;</span>, &#123;</span><br><span class="line">  <span class="attr">maxAge</span>: <span class="string">&#x27;1y&#x27;</span>,</span><br><span class="line">  <span class="attr">etag</span>: <span class="literal">true</span>,</span><br><span class="line">  <span class="attr">lastModified</span>: <span class="literal">true</span>,</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+
+<h2 id="Network-Optimization"><a href="#Network-Optimization" class="headerlink" title="Network Optimization"></a>Network Optimization</h2><h3 id="HTTP-2-and-HTTP-3"><a href="#HTTP-2-and-HTTP-3" class="headerlink" title="HTTP&#x2F;2 and HTTP&#x2F;3"></a>HTTP&#x2F;2 and HTTP&#x2F;3</h3><h4 id="HTTP-2-Benefits"><a href="#HTTP-2-Benefits" class="headerlink" title="HTTP&#x2F;2 Benefits:"></a>HTTP&#x2F;2 Benefits:</h4><ul>
+<li><strong>Multiplexing</strong>: Multiple requests over single connection</li>
+<li><strong>Server Push</strong>: Proactive resource delivery</li>
+<li><strong>Header Compression</strong>: Reduced overhead</li>
+</ul>
+<h4 id="Implementation"><a href="#Implementation" class="headerlink" title="Implementation:"></a>Implementation:</h4><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Nginx HTTP/2 configuration</span></span><br><span class="line"><span class="section">server</span> &#123;</span><br><span class="line">    <span class="attribute">listen</span> <span class="number">443</span> ssl http2;</span><br><span class="line">    <span class="attribute">ssl_certificate</span> /path/to/cert.pem;</span><br><span class="line">    <span class="attribute">ssl_certificate_key</span> /path/to/key.pem;</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># Enable server push</span></span><br><span class="line">    <span class="section">location</span> / &#123;</span><br><span class="line">        <span class="attribute">http2_push</span> /css/styles.css;</span><br><span class="line">        <span class="attribute">http2_push</span> /js/app.js;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Resource-Hints"><a href="#Resource-Hints" class="headerlink" title="Resource Hints"></a>Resource Hints</h3><h4 id="Preload-Critical-Resources"><a href="#Preload-Critical-Resources" class="headerlink" title="Preload Critical Resources:"></a>Preload Critical Resources:</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preload&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/fonts/main.woff2&quot;</span> <span class="attr">as</span>=<span class="string">&quot;font&quot;</span> <span class="attr">type</span>=<span class="string">&quot;font/woff2&quot;</span> <span class="attr">crossorigin</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preload&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/css/critical.css&quot;</span> <span class="attr">as</span>=<span class="string">&quot;style&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preload&quot;</span> <span class="attr">href</span>=<span class="string">&quot;/js/app.js&quot;</span> <span class="attr">as</span>=<span class="string">&quot;script&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Preconnect-to-External-Domains"><a href="#Preconnect-to-External-Domains" class="headerlink" title="Preconnect to External Domains:"></a>Preconnect to External Domains:</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preconnect&quot;</span> <span class="attr">href</span>=<span class="string">&quot;https://fonts.googleapis.com&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;preconnect&quot;</span> <span class="attr">href</span>=<span class="string">&quot;https://api.example.com&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Monitoring-and-Measurement"><a href="#Monitoring-and-Measurement" class="headerlink" title="Monitoring and Measurement"></a>Monitoring and Measurement</h2><h3 id="Performance-Monitoring-Tools"><a href="#Performance-Monitoring-Tools" class="headerlink" title="Performance Monitoring Tools"></a>Performance Monitoring Tools</h3><h4 id="Real-User-Monitoring-RUM"><a href="#Real-User-Monitoring-RUM" class="headerlink" title="Real User Monitoring (RUM):"></a>Real User Monitoring (RUM):</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Custom performance monitoring</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;load&#x27;</span>, <span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> navigation = performance.<span class="title function_">getEntriesByType</span>(<span class="string">&#x27;navigation&#x27;</span>)[<span class="number">0</span>];</span><br><span class="line">  <span class="keyword">const</span> paint = performance.<span class="title function_">getEntriesByType</span>(<span class="string">&#x27;paint&#x27;</span>);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Send metrics to analytics</span></span><br><span class="line">  analytics.<span class="title function_">track</span>(<span class="string">&#x27;page_load_time&#x27;</span>, &#123;</span><br><span class="line">    <span class="attr">loadTime</span>: navigation.<span class="property">loadEventEnd</span> - navigation.<span class="property">loadEventStart</span>,</span><br><span class="line">    <span class="attr">domContentLoaded</span>: navigation.<span class="property">domContentLoadedEventEnd</span> - navigation.<span class="property">domContentLoadedEventStart</span>,</span><br><span class="line">    <span class="attr">firstPaint</span>: paint.<span class="title function_">find</span>(<span class="function"><span class="params">p</span> =&gt;</span> p.<span class="property">name</span> === <span class="string">&#x27;first-paint&#x27;</span>)?.<span class="property">startTime</span>,</span><br><span class="line">    <span class="attr">firstContentfulPaint</span>: paint.<span class="title function_">find</span>(<span class="function"><span class="params">p</span> =&gt;</span> p.<span class="property">name</span> === <span class="string">&#x27;first-contentful-paint&#x27;</span>)?.<span class="property">startTime</span>,</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="Web-Vitals-Measurement"><a href="#Web-Vitals-Measurement" class="headerlink" title="Web Vitals Measurement:"></a>Web Vitals Measurement:</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; getCLS, getFID, getFCP, getLCP, getTTFB &#125; <span class="keyword">from</span> <span class="string">&#x27;web-vitals&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="title function_">getCLS</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br><span class="line"><span class="title function_">getFID</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br><span class="line"><span class="title function_">getFCP</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br><span class="line"><span class="title function_">getLCP</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br><span class="line"><span class="title function_">getTTFB</span>(<span class="variable language_">console</span>.<span class="property">log</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Progressive-Web-App-PWA-Performance"><a href="#Progressive-Web-App-PWA-Performance" class="headerlink" title="Progressive Web App (PWA) Performance"></a>Progressive Web App (PWA) Performance</h2><h3 id="Service-Worker-Caching"><a href="#Service-Worker-Caching" class="headerlink" title="Service Worker Caching:"></a>Service Worker Caching:</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Service worker for offline caching</span></span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">CACHE_NAME</span> = <span class="string">&#x27;app-v1&#x27;</span>;</span><br><span class="line"><span class="keyword">const</span> urlsToCache = [</span><br><span class="line">  <span class="string">&#x27;/&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;/css/styles.css&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;/js/app.js&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;/images/logo.png&#x27;</span></span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;install&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  event.<span class="title function_">waitUntil</span>(</span><br><span class="line">    caches.<span class="title function_">open</span>(<span class="variable constant_">CACHE_NAME</span>)</span><br><span class="line">      .<span class="title function_">then</span>(<span class="function"><span class="params">cache</span> =&gt;</span> cache.<span class="title function_">addAll</span>(urlsToCache))</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">self.<span class="title function_">addEventListener</span>(<span class="string">&#x27;fetch&#x27;</span>, <span class="function"><span class="params">event</span> =&gt;</span> &#123;</span><br><span class="line">  event.<span class="title function_">respondWith</span>(</span><br><span class="line">    caches.<span class="title function_">match</span>(event.<span class="property">request</span>)</span><br><span class="line">      .<span class="title function_">then</span>(<span class="function"><span class="params">response</span> =&gt;</span> response || <span class="title function_">fetch</span>(event.<span class="property">request</span>))</span><br><span class="line">  );</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Performance-Budgets"><a href="#Performance-Budgets" class="headerlink" title="Performance Budgets"></a>Performance Budgets</h2><h3 id="Setting-Performance-Budgets"><a href="#Setting-Performance-Budgets" class="headerlink" title="Setting Performance Budgets:"></a>Setting Performance Budgets:</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Webpack bundle analyzer</span></span><br><span class="line"><span class="keyword">const</span> <span class="title class_">BundleAnalyzerPlugin</span> = <span class="built_in">require</span>(<span class="string">&#x27;webpack-bundle-analyzer&#x27;</span>).<span class="property">BundleAnalyzerPlugin</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = &#123;</span><br><span class="line">  <span class="attr">plugins</span>: [</span><br><span class="line">    <span class="keyword">new</span> <span class="title class_">BundleAnalyzerPlugin</span>(&#123;</span><br><span class="line">      <span class="attr">analyzerMode</span>: <span class="string">&#x27;static&#x27;</span>,</span><br><span class="line">      <span class="attr">openAnalyzer</span>: <span class="literal">false</span>,</span><br><span class="line">    &#125;),</span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">performance</span>: &#123;</span><br><span class="line">    <span class="attr">hints</span>: <span class="string">&#x27;warning&#x27;</span>,</span><br><span class="line">    <span class="attr">maxEntrypointSize</span>: <span class="number">512000</span>,</span><br><span class="line">    <span class="attr">maxAssetSize</span>: <span class="number">512000</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Web performance optimization is a continuous process that requires attention to multiple aspects: frontend optimization, backend efficiency, network optimization, and ongoing monitoring. By focusing on Core Web Vitals and implementing the strategies outlined in this guide, you can significantly improve your website’s performance and user experience.</p>
+<p>Remember that performance optimization is not a one-time task but an ongoing commitment to providing the best possible experience for your users. Regular monitoring, testing, and optimization will ensure your web applications remain fast and responsive in an ever-evolving digital landscape. </p>
+
+        
+  </div>
+</article>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Zhaokun
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/BufferHund/bufferhund.github.io/">Home</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li><!--
+     --><!--
+       --><li><a href="https://github.com/BufferHund">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+
+<script src="/BufferHund/bufferhund.github.io/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
