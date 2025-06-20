@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Model Quantization for LLMs: Techniques and Trade-offsModel quantization is a key technique for reducing the size and computational requirements of large language models (LLMs), enabling efficient dep">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Model Quantization for Large Language Models: Techniques and Trade-offs">
+<meta property="og:url" content="https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/index.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Space | Blog site (Currently in maintenance mode, repository is private, will be public again soon)">
+<meta property="og:description" content="Model Quantization for LLMs: Techniques and Trade-offsModel quantization is a key technique for reducing the size and computational requirements of large language models (LLMs), enabling efficient dep">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-12-20T12:50:00.000Z">
+<meta property="article:modified_time" content="2025-06-20T22:11:38.645Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Quantization">
+<meta property="article:tag" content="Model Compression">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/BufferHund/bufferhund.github.io/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/BufferHund/bufferhund.github.io/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/BufferHund/bufferhund.github.io/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>Model Quantization for Large Language Models: Techniques and Trade-offs</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/BufferHund/bufferhund.github.io/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/BufferHund/bufferhund.github.io/">Home</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li><!--
+     --><!--
+       --><li><a href="https://github.com/BufferHund">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/BufferHund/bufferhund.github.io/2024/12/30/web-performance-optimization/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&text=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&is_video=false&description=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Model Quantization for Large Language Models: Techniques and Trade-offs&body=Check out this article: https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&name=Model Quantization for Large Language Models: Techniques and Trade-offs&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&t=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Model-Quantization-for-LLMs-Techniques-and-Trade-offs"><span class="toc-number">1.</span> <span class="toc-text">Model Quantization for LLMs: Techniques and Trade-offs</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-Quantization"><span class="toc-number">1.1.</span> <span class="toc-text">What is Quantization?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quantization-Techniques"><span class="toc-number">1.2.</span> <span class="toc-text">Quantization Techniques</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Trade-offs"><span class="toc-number">1.3.</span> <span class="toc-text">Trade-offs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Best-Practices"><span class="toc-number">1.4.</span> <span class="toc-text">Best Practices</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.5.</span> <span class="toc-text">Conclusion</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        Model Quantization for Large Language Models: Techniques and Trade-offs
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Zhaokun</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-12-20T12:50:00.000Z" class="dt-published" itemprop="datePublished">2024-12-20</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/BufferHund/bufferhund.github.io/categories/ML-NLP/">ML/NLP</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/LLM/" rel="tag">LLM</a>, <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/Machine-Learning/" rel="tag">Machine Learning</a>, <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/Model-Compression/" rel="tag">Model Compression</a>, <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/Quantization/" rel="tag">Quantization</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Model-Quantization-for-LLMs-Techniques-and-Trade-offs"><a href="#Model-Quantization-for-LLMs-Techniques-and-Trade-offs" class="headerlink" title="Model Quantization for LLMs: Techniques and Trade-offs"></a>Model Quantization for LLMs: Techniques and Trade-offs</h1><p>Model quantization is a key technique for reducing the size and computational requirements of large language models (LLMs), enabling efficient deployment on edge devices and in production environments.</p>
+<h2 id="What-is-Quantization"><a href="#What-is-Quantization" class="headerlink" title="What is Quantization?"></a>What is Quantization?</h2><p>Quantization reduces the precision of model weights and activations, typically from 32-bit floating point to 8-bit or lower. This leads to smaller models and faster inference.</p>
+<h2 id="Quantization-Techniques"><a href="#Quantization-Techniques" class="headerlink" title="Quantization Techniques"></a>Quantization Techniques</h2><ul>
+<li><strong>Post-Training Quantization (PTQ)</strong>: Quantizes a pre-trained model without further training. Fast but may reduce accuracy.</li>
+<li><strong>Quantization-Aware Training (QAT)</strong>: Simulates quantization during training, allowing the model to adapt. Better accuracy but requires retraining.</li>
+<li><strong>Mixed-Precision Quantization</strong>: Uses different precisions for different layers or operations, balancing speed and accuracy.</li>
+</ul>
+<h2 id="Trade-offs"><a href="#Trade-offs" class="headerlink" title="Trade-offs"></a>Trade-offs</h2><ul>
+<li><strong>Accuracy vs. Efficiency</strong>: Lower precision can degrade model performance, especially for complex tasks.</li>
+<li><strong>Hardware Support</strong>: Not all hardware supports all quantization schemes.</li>
+<li><strong>Deployment Complexity</strong>: Quantized models may require specialized runtimes or libraries.</li>
+</ul>
+<h2 id="Best-Practices"><a href="#Best-Practices" class="headerlink" title="Best Practices"></a>Best Practices</h2><ul>
+<li>Evaluate quantized models on target hardware.</li>
+<li>Use QAT for critical applications where accuracy is paramount.</li>
+<li>Monitor for unexpected behaviors or biases after quantization.</li>
+</ul>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Quantization is essential for scaling LLMs to real-world applications. By understanding the available techniques and their trade-offs, practitioners can deploy efficient, high-performing models across diverse environments. </p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/">Home</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li>
+        
+          <li><a href="https://github.com/BufferHund">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Model-Quantization-for-LLMs-Techniques-and-Trade-offs"><span class="toc-number">1.</span> <span class="toc-text">Model Quantization for LLMs: Techniques and Trade-offs</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#What-is-Quantization"><span class="toc-number">1.1.</span> <span class="toc-text">What is Quantization?</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Quantization-Techniques"><span class="toc-number">1.2.</span> <span class="toc-text">Quantization Techniques</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Trade-offs"><span class="toc-number">1.3.</span> <span class="toc-text">Trade-offs</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Best-Practices"><span class="toc-number">1.4.</span> <span class="toc-text">Best Practices</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.5.</span> <span class="toc-text">Conclusion</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&text=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&is_video=false&description=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Model Quantization for Large Language Models: Techniques and Trade-offs&body=Check out this article: https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&title=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&name=Model Quantization for Large Language Models: Techniques and Trade-offs&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://github.com/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/&t=Model Quantization for Large Language Models: Techniques and Trade-offs"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Zhaokun
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/BufferHund/bufferhund.github.io/">Home</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li><!--
+     --><!--
+       --><li><a href="https://github.com/BufferHund">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/BufferHund/bufferhund.github.io/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>

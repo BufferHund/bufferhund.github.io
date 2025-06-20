@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <meta name="description" content="Fine-Tuning Strategies for Large Language Models: Best Practices and PitfallsFine-tuning is a critical step in adapting large language models (LLMs) to specific tasks or domains. This article reviews">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning">
+<meta property="og:url" content="https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/index.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Space | Blog site (Currently in maintenance mode, repository is private, will be public again soon)">
+<meta property="og:description" content="Fine-Tuning Strategies for Large Language Models: Best Practices and PitfallsFine-tuning is a critical step in adapting large language models (LLMs) to specific tasks or domains. This article reviews">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-11-28T15:40:00.000Z">
+<meta property="article:modified_time" content="2025-06-20T22:11:36.642Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="Machine Learning">
+<meta property="article:tag" content="Fine-tuning">
+<meta property="article:tag" content="NLP">
+<meta name="twitter:card" content="summary">
+    
+    
+      
+        
+          <link rel="shortcut icon" href="/BufferHund/bufferhund.github.io/images/favicon.ico">
+        
+      
+      
+        
+          <link rel="icon" type="image/png" href="/BufferHund/bufferhund.github.io/images/favicon-192x192.png" sizes="192x192">
+        
+      
+      
+        
+          <link rel="apple-touch-icon" sizes="180x180" href="/BufferHund/bufferhund.github.io/images/apple-touch-icon.png">
+        
+      
+    
+    <!-- title -->
+    <title>LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning</title>
+    <!-- async scripts -->
+    <!-- Google Analytics -->
+
+
+    <!-- Umami Analytics -->
+
+
+    <!-- styles -->
+    
+<link rel="stylesheet" href="/BufferHund/bufferhund.github.io/css/style.css">
+
+    <!-- persian styles -->
+    
+    <!-- rss -->
+    
+    
+	<!-- mathjax -->
+	
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#" aria-label="Menu"><i class="fa-solid fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" aria-label="Top" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa-solid fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        <!--
+       --><li><a href="/BufferHund/bufferhund.github.io/">Home</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li><!--
+     --><!--
+       --><li><a href="https://github.com/BufferHund">Projects</a></li><!--
+     -->
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" aria-label="Previous post" href="/BufferHund/bufferhund.github.io/2024/12/20/model-quantization-llm/"><i class="fa-solid fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" aria-label="Next post" href="/BufferHund/bufferhund.github.io/2024/11/25/css-grid-flexbox-mastery/"><i class="fa-solid fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" aria-label="Back to top" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" aria-label="Share post" href="#"><i class="fa-solid fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&text=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&is_video=false&description=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning&body=Check out this article: https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/"><i class="fa-solid fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&name=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&t=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-hacker-news " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    
+    
+      <div id="toc">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fine-Tuning-Strategies-for-Large-Language-Models-Best-Practices-and-Pitfalls"><span class="toc-number">1.</span> <span class="toc-text">Fine-Tuning Strategies for Large Language Models: Best Practices and Pitfalls</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Full-Parameter-Fine-Tuning"><span class="toc-number">1.1.</span> <span class="toc-text">1. Full-Parameter Fine-Tuning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Parameter-Efficient-Fine-Tuning-PEFT"><span class="toc-number">1.2.</span> <span class="toc-text">2. Parameter-Efficient Fine-Tuning (PEFT)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Instruction-Tuning"><span class="toc-number">1.3.</span> <span class="toc-text">3. Instruction Tuning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Domain-Adaptation"><span class="toc-number">1.4.</span> <span class="toc-text">4. Domain Adaptation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Best-Practices"><span class="toc-number">1.5.</span> <span class="toc-text">Best Practices</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Common-Pitfalls"><span class="toc-number">1.6.</span> <span class="toc-text">Common Pitfalls</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.7.</span> <span class="toc-text">Conclusion</span></a></li></ol></li></ol>
+      </div>
+    
+  </span>
+</div>
+
+    
+    <div class="content index py4 ">
+        
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle p-name" itemprop="name headline">
+        LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author p-author h-card" itemprop="author" itemscope itemtype="http://schema.org/Person">
+        <span class="p-name" itemprop="name">Zhaokun</span>
+      </span>
+      
+    <div class="postdate">
+      
+        <time datetime="2024-11-28T15:40:00.000Z" class="dt-published" itemprop="datePublished">2024-11-28</time>
+        
+      
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fa-solid fa-archive"></i>
+        <a class="category-link" href="/BufferHund/bufferhund.github.io/categories/ML-NLP/">ML/NLP</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa-solid fa-tag"></i>
+        <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/Fine-tuning/" rel="tag">Fine-tuning</a>, <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/LLM/" rel="tag">LLM</a>, <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/Machine-Learning/" rel="tag">Machine Learning</a>, <a class="p-category" href="/BufferHund/bufferhund.github.io/tags/NLP/" rel="tag">NLP</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content e-content" itemprop="articleBody">
+    <h1 id="Fine-Tuning-Strategies-for-Large-Language-Models-Best-Practices-and-Pitfalls"><a href="#Fine-Tuning-Strategies-for-Large-Language-Models-Best-Practices-and-Pitfalls" class="headerlink" title="Fine-Tuning Strategies for Large Language Models: Best Practices and Pitfalls"></a>Fine-Tuning Strategies for Large Language Models: Best Practices and Pitfalls</h1><p>Fine-tuning is a critical step in adapting large language models (LLMs) to specific tasks or domains. This article reviews popular fine-tuning strategies, best practices, and common pitfalls.</p>
+<h2 id="1-Full-Parameter-Fine-Tuning"><a href="#1-Full-Parameter-Fine-Tuning" class="headerlink" title="1. Full-Parameter Fine-Tuning"></a>1. Full-Parameter Fine-Tuning</h2><p>All model parameters are updated during training on the target dataset.</p>
+<ul>
+<li><strong>Pros</strong>: Maximum flexibility and performance.</li>
+<li><strong>Cons</strong>: High computational cost, risk of overfitting, and catastrophic forgetting.</li>
+</ul>
+<h2 id="2-Parameter-Efficient-Fine-Tuning-PEFT"><a href="#2-Parameter-Efficient-Fine-Tuning-PEFT" class="headerlink" title="2. Parameter-Efficient Fine-Tuning (PEFT)"></a>2. Parameter-Efficient Fine-Tuning (PEFT)</h2><p>Techniques like LoRA, adapters, and prefix-tuning update only a small subset of parameters.</p>
+<ul>
+<li><strong>Pros</strong>: Lower resource requirements, faster training, easier deployment.</li>
+<li><strong>Cons</strong>: May not match full fine-tuning performance for some tasks.</li>
+</ul>
+<h2 id="3-Instruction-Tuning"><a href="#3-Instruction-Tuning" class="headerlink" title="3. Instruction Tuning"></a>3. Instruction Tuning</h2><p>Models are fine-tuned on datasets of instructions and responses, improving their ability to follow user prompts.</p>
+<ul>
+<li><strong>Benefits</strong>: Better alignment with user intent, improved generalization.</li>
+</ul>
+<h2 id="4-Domain-Adaptation"><a href="#4-Domain-Adaptation" class="headerlink" title="4. Domain Adaptation"></a>4. Domain Adaptation</h2><p>Fine-tuning on domain-specific data (e.g., legal, medical) to improve performance in specialized areas.</p>
+<ul>
+<li><strong>Challenges</strong>: Requires high-quality, domain-relevant data.</li>
+</ul>
+<h2 id="Best-Practices"><a href="#Best-Practices" class="headerlink" title="Best Practices"></a>Best Practices</h2><ul>
+<li>Use validation sets to monitor overfitting.</li>
+<li>Start with parameter-efficient methods when resources are limited.</li>
+<li>Regularly evaluate on out-of-domain data.</li>
+<li>Document all fine-tuning steps and data sources.</li>
+</ul>
+<h2 id="Common-Pitfalls"><a href="#Common-Pitfalls" class="headerlink" title="Common Pitfalls"></a>Common Pitfalls</h2><ul>
+<li>Overfitting to small datasets.</li>
+<li>Data leakage from test to training sets.</li>
+<li>Ignoring evaluation on real-world data.</li>
+</ul>
+<h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><p>Fine-tuning is powerful but requires careful design and monitoring. By following best practices and being aware of common pitfalls, practitioners can maximize the effectiveness of LLM adaptation. </p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/">Home</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li>
+        
+          <li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li>
+        
+          <li><a href="https://github.com/BufferHund">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    
+    
+      <div id="toc-footer" style="display: none">
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fine-Tuning-Strategies-for-Large-Language-Models-Best-Practices-and-Pitfalls"><span class="toc-number">1.</span> <span class="toc-text">Fine-Tuning Strategies for Large Language Models: Best Practices and Pitfalls</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Full-Parameter-Fine-Tuning"><span class="toc-number">1.1.</span> <span class="toc-text">1. Full-Parameter Fine-Tuning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Parameter-Efficient-Fine-Tuning-PEFT"><span class="toc-number">1.2.</span> <span class="toc-text">2. Parameter-Efficient Fine-Tuning (PEFT)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Instruction-Tuning"><span class="toc-number">1.3.</span> <span class="toc-text">3. Instruction Tuning</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Domain-Adaptation"><span class="toc-number">1.4.</span> <span class="toc-text">4. Domain Adaptation</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Best-Practices"><span class="toc-number">1.5.</span> <span class="toc-text">Best Practices</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Common-Pitfalls"><span class="toc-number">1.6.</span> <span class="toc-text">Common Pitfalls</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Conclusion"><span class="toc-number">1.7.</span> <span class="toc-text">Conclusion</span></a></li></ol></li></ol>
+      </div>
+    
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.facebook.com/sharer.php?u=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://twitter.com/share?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&text=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.linkedin.com/shareArticle?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://pinterest.com/pin/create/bookmarklet/?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&is_video=false&description=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning&body=Check out this article: https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/"><i class="fa-solid fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://getpocket.com/save?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://reddit.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.stumbleupon.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://digg.com/submit?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&title=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="http://www.tumblr.com/share/link?url=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&name=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" target="_blank" rel="noopener" href="https://news.ycombinator.com/submitlink?u=https://github.com/BufferHund/bufferhund.github.io/2024/11/28/llm-fine-tuning-strategies/&t=LLM Fine-tuning Strategies: From LoRA to Full Fine-tuning"><i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fa-solid fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+          <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fa-solid fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fa-solid fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa-solid fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy;
+    
+    
+    2016-2025
+    Zhaokun
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        <!--
+       --><li><a href="/BufferHund/bufferhund.github.io/">Home</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/about/">About</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/archives/">archive</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/mlnlp/">ML/NLP</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/webdev/">WebDev</a></li><!--
+     --><!--
+       --><li><a href="/BufferHund/bufferhund.github.io/lifeplus/">Life+</a></li><!--
+     --><!--
+       --><li><a href="https://github.com/BufferHund">Projects</a></li><!--
+     -->
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+    <!-- styles -->
+
+
+
+  <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'"/>
+
+
+    <!-- jquery -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- clipboard -->
+
+  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.7/clipboard.min.js" crossorigin="anonymous"></script>
+  
+  <script type="text/javascript">
+  $(function() {
+    // copy-btn HTML
+    var btn = "<span class=\"btn-copy tooltipped tooltipped-sw\" aria-label=\"Copy to clipboard!\">";
+    btn += '<i class="fa-regular fa-clone"></i>';
+    btn += '</span>';
+    // mount it!
+    $(".highlight table").before(btn);
+    var clip = new ClipboardJS('.btn-copy', {
+      text: function(trigger) {
+        return Array.from(trigger.nextElementSibling.querySelectorAll('.code')).reduce((str,it)=>str+it.innerText+'\n','')
+      }
+    });
+    clip.on('success', function(e) {
+      e.trigger.setAttribute('aria-label', "Copied!");
+      e.clearSelection();
+    })
+  })
+  </script>
+
+
+<script src="/BufferHund/bufferhund.github.io/js/main.js"></script>
+
+<!-- search -->
+
+<!-- Baidu Analytics -->
+
+<!-- Cloudflare Analytics -->
+
+<!-- Disqus Comments -->
+
+<!-- utterances Comments -->
+
+</body>
+</html>
