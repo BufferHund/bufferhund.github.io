@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>My TypeScript &#39;Aha!&#39; Moments: Best Practices I Learned on a Real Project | Zhaokun&#39;s Blog 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="My TypeScript ‘Aha!’ Moments: Best Practices I Learned on a Real ProjectI just spent a semester wrestling with a pretty complex web application for my software engineering course. We chose TypeScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="My TypeScript &#39;Aha!&#39; Moments: Best Practices I Learned on a Real Project">
+<meta property="og:url" content="https://bufferhund.github.io/2025/01/15/typescript-best-practices/index.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Blog 2025">
+<meta property="og:description" content="My TypeScript ‘Aha!’ Moments: Best Practices I Learned on a Real ProjectI just spent a semester wrestling with a pretty complex web application for my software engineering course. We chose TypeScript">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-01-15T12:30:00.000Z">
+<meta property="article:modified_time" content="2025-01-17T21:39:00.000Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="StudentDeveloper">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="TypeScript">
+<meta property="article:tag" content="Best Practices">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Zhaokun's Blog 2025" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Zhaokun&#39;s Blog 2025</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Full Stack Developer | ML/NLP/LLM</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://bufferhund.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-typescript-best-practices" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/01/15/typescript-best-practices/" class="article-date">
+  <time class="dt-published" datetime="2025-01-15T12:30:00.000Z" itemprop="datePublished">2025-01-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDev/">WebDev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      My TypeScript &#39;Aha!&#39; Moments: Best Practices I Learned on a Real Project
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="My-TypeScript-‘Aha-’-Moments-Best-Practices-I-Learned-on-a-Real-Project"><a href="#My-TypeScript-‘Aha-’-Moments-Best-Practices-I-Learned-on-a-Real-Project" class="headerlink" title="My TypeScript ‘Aha!’ Moments: Best Practices I Learned on a Real Project"></a>My TypeScript ‘Aha!’ Moments: Best Practices I Learned on a Real Project</h1><p>I just spent a semester wrestling with a pretty complex web application for my software engineering course. We chose TypeScript from the start, thinking it would magically prevent all bugs. It didn’t. But what it <em>did</em> do was force us to be better engineers. Along the way, I had a few “aha!” moments—things that, once they clicked, completely changed how I write code. Here are the big ones.</p>
+<h2 id="Lesson-1-Your-tsconfig-json-is-Your-First-Line-of-Defense"><a href="#Lesson-1-Your-tsconfig-json-is-Your-First-Line-of-Defense" class="headerlink" title="Lesson 1: Your tsconfig.json is Your First Line of Defense"></a>Lesson 1: Your <code>tsconfig.json</code> is Your First Line of Defense</h2><p>When you first initialize a TypeScript project, you get a <code>tsconfig.json</code> file. My initial instinct was to ignore it. Big mistake. The single most important thing I learned was to enable <code>strict: true</code>.</p>
+<p>Turning on strict mode is like activating a whole suite of safety checks. It forces you to handle <code>null</code> and <code>undefined</code> values, ensures your functions have explicit return types, and stops you from using <code>any</code> implicitly. It felt annoying at first, like the compiler was constantly yelling at me. But every error it caught was a potential runtime bug that would have been a nightmare to track down later. Don’t skip this. It’s your best friend.</p>
+<h2 id="Lesson-2-any-is-a-Lie"><a href="#Lesson-2-any-is-a-Lie" class="headerlink" title="Lesson 2: any is a Lie"></a>Lesson 2: <code>any</code> is a Lie</h2><p>When you’re in a hurry, it’s so tempting to type something as <code>any</code>. It makes the compiler errors go away, and you can move on. I learned the hard way that <code>any</code> is a lie. It’s a backdoor that lets you escape the type system, which defeats the entire purpose of using TypeScript.</p>
+<p>Every time we used <code>any</code>, it came back to bite us. We’d pass the wrong type of data, and the error would show up deep in some other part of the application, far from the source of the problem. The rule we eventually adopted was: if you don’t know the type, use <code>unknown</code>. <code>unknown</code> is the type-safe version of <code>any</code>. It forces you to do a type check before you can use the variable, which is exactly what you should be doing.</p>
+<h2 id="Lesson-3-Use-interface-for-Shapes-type-for-Everything-Else"><a href="#Lesson-3-Use-interface-for-Shapes-type-for-Everything-Else" class="headerlink" title="Lesson 3: Use interface for Shapes, type for Everything Else"></a>Lesson 3: Use <code>interface</code> for Shapes, <code>type</code> for Everything Else</h2><p>The <code>interface</code> vs. <code>type</code> debate is endless online. Our team settled on a simple convention that made our code much easier to read:</p>
+<ul>
+<li><strong>Use <code>interface</code> when defining the “shape” of an object.</strong> Think of it as a contract for what a <code>User</code> or a <code>Product</code> object should look like. Interfaces can also be extended, which is great for object-oriented patterns.</li>
+<li><strong>Use <code>type</code> for everything else.</strong> This includes creating union types (<code>type Status = &#39;pending&#39; | &#39;success&#39;</code>), defining function signatures, or creating complex types using utility types.</li>
+</ul>
+<p>This simple rule brought a lot of clarity to our codebase.</p>
+<h2 id="Lesson-4-Utility-Types-Are-Pure-Magic"><a href="#Lesson-4-Utility-Types-Are-Pure-Magic" class="headerlink" title="Lesson 4: Utility Types Are Pure Magic"></a>Lesson 4: Utility Types Are Pure Magic</h2><p>This was my biggest “aha!” moment. I spent hours writing boilerplate types until a TA showed me TypeScript’s built-in utility types. They are incredible time-savers.</p>
+<ul>
+<li>Need to create a new type for a form that has all the properties of your <code>User</code> interface, but they should all be optional? That’s just <code>Partial&lt;User&gt;</code>.</li>
+<li>Need a type that only has the <code>id</code> and <code>name</code> from your <code>User</code>? That’s <code>Pick&lt;User, &#39;id&#39; | &#39;name&#39;&gt;</code>.</li>
+<li>Need a type that has everything <em>except</em> the <code>password</code>? <code>Omit&lt;User, &#39;password&#39;&gt;</code>.</li>
+</ul>
+<p>Learning to use these utility types felt like unlocking a superpower. It made our code more concise and much more maintainable.</p>
+<h2 id="Lesson-5-Discriminated-Unions-for-State-Management"><a href="#Lesson-5-Discriminated-Unions-for-State-Management" class="headerlink" title="Lesson 5: Discriminated Unions for State Management"></a>Lesson 5: Discriminated Unions for State Management</h2><p>In our React components, we used to have a bunch of boolean flags to manage state: <code>isLoading</code>, <code>isError</code>, <code>isSuccess</code>. It was a mess.</p>
+<p>The pattern that cleaned this up completely was discriminated unions. We created a state type like this:</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> <span class="title class_">ComponentState</span>&lt;T&gt; = </span><br><span class="line">  | &#123; <span class="attr">status</span>: <span class="string">&#x27;loading&#x27;</span> &#125;</span><br><span class="line">  | &#123; <span class="attr">status</span>: <span class="string">&#x27;success&#x27;</span>; <span class="attr">data</span>: T &#125;</span><br><span class="line">  | &#123; <span class="attr">status</span>: <span class="string">&#x27;error&#x27;</span>; <span class="attr">error</span>: <span class="title class_">Error</span> &#125;;</span><br></pre></td></tr></table></figure>
+
+<p>The <code>status</code> property is the “discriminant.” In our component, we could now use a simple <code>switch</code> statement on <code>state.status</code>. The best part is that TypeScript is smart enough to know that if <code>state.status</code> is <code>&#39;success&#39;</code>, then <code>state.data</code> must exist. It made our rendering logic clean, safe, and impossible to mess up.</p>
+<hr>
+<p>This project taught me that TypeScript isn’t about adding rules for the sake of it. It’s about providing a framework for writing code that is easier to reason about, maintain, and refactor. These practices were my lifelines, and I won’t be starting another project without them.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://bufferhund.github.io/2025/01/15/typescript-best-practices/" data-id="cmd80keml0016mlghfa7k22b0" data-title="My TypeScript &#39;Aha!&#39; Moments: Best Practices I Learned on a Real Project" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Best-Practices/" rel="tag">Best Practices</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StudentDeveloper/" rel="tag">StudentDeveloper</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/01/18/rag-llm-applications/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Building My First RAG System: Grounding LLMs in Reality
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2024/12/30/web-performance-optimization/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">My App Was Working, But It Was Slow: A Student&#39;s Guide to Web Performance</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Life/">Life+</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ML-NLP/">ML/NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDev/">WebDev</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Angular/" rel="tag">Angular</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backend/" rel="tag">Backend</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Best-Practices/" rel="tag">Best Practices</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/" rel="tag">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computer-Vision/" rel="tag">Computer Vision</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Data-Contamination/" rel="tag">Data Contamination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Systems/" rel="tag">Design Systems</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Evaluation/" rel="tag">Evaluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fine-tuning/" rel="tag">Fine-tuning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flexbox/" rel="tag">Flexbox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frameworks/" rel="tag">Frameworks</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frontend/" rel="tag">Frontend</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Germany/" rel="tag">Germany</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Grad-School/" rel="tag">Grad School</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Grid/" rel="tag">Grid</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Growth/" rel="tag">Growth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hardware/" rel="tag">Hardware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heidelberg/" rel="tag">Heidelberg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hiking/" rel="tag">Hiking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hooks/" rel="tag">Hooks</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Information-Retrieval/" rel="tag">Information Retrieval</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LLM/" rel="tag">LLM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LLM-Architecture/" rel="tag">LLM Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/" rel="tag">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LoRA/" rel="tag">LoRA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Machine-Learning/" rel="tag">Machine Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Metrics/" rel="tag">Metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microservices/" rel="tag">Microservices</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MoE/" rel="tag">MoE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/" rel="tag">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Multimodal-AI/" rel="tag">Multimodal AI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nature/" rel="tag">Nature</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/" rel="tag">Node.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimization/" rel="tag">Optimization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PEFT/" rel="tag">PEFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Quality-Assurance/" rel="tag">Quality Assurance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Quantization/" rel="tag">Quantization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAG/" rel="tag">RAG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reflection/" rel="tag">Reflection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Research/" rel="tag">Research</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Research-Integrity/" rel="tag">Research Integrity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Student-Life/" rel="tag">Student Life</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StudentDeveloper/" rel="tag">StudentDeveloper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Testing/" rel="tag">Testing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Trends/" rel="tag">Trends</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI-UX/" rel="tag">UI&#x2F;UX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web-Development/" rel="tag">Web Development</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AI/" style="font-size: 10px;">AI</a> <a href="/tags/Angular/" style="font-size: 10px;">Angular</a> <a href="/tags/Architecture/" style="font-size: 10px;">Architecture</a> <a href="/tags/Backend/" style="font-size: 10px;">Backend</a> <a href="/tags/Best-Practices/" style="font-size: 10px;">Best Practices</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Computer-Vision/" style="font-size: 10px;">Computer Vision</a> <a href="/tags/Data-Contamination/" style="font-size: 10px;">Data Contamination</a> <a href="/tags/Design-Systems/" style="font-size: 10px;">Design Systems</a> <a href="/tags/Evaluation/" style="font-size: 10px;">Evaluation</a> <a href="/tags/Fine-tuning/" style="font-size: 10px;">Fine-tuning</a> <a href="/tags/Flexbox/" style="font-size: 10px;">Flexbox</a> <a href="/tags/Frameworks/" style="font-size: 10px;">Frameworks</a> <a href="/tags/Frontend/" style="font-size: 14px;">Frontend</a> <a href="/tags/Germany/" style="font-size: 10px;">Germany</a> <a href="/tags/Grad-School/" style="font-size: 16px;">Grad School</a> <a href="/tags/Grid/" style="font-size: 10px;">Grid</a> <a href="/tags/Growth/" style="font-size: 10px;">Growth</a> <a href="/tags/Hardware/" style="font-size: 10px;">Hardware</a> <a href="/tags/Heidelberg/" style="font-size: 12px;">Heidelberg</a> <a href="/tags/Hiking/" style="font-size: 10px;">Hiking</a> <a href="/tags/Hooks/" style="font-size: 10px;">Hooks</a> <a href="/tags/Information-Retrieval/" style="font-size: 10px;">Information Retrieval</a> <a href="/tags/JavaScript/" style="font-size: 14px;">JavaScript</a> <a href="/tags/LLM/" style="font-size: 18px;">LLM</a> <a href="/tags/LLM-Architecture/" style="font-size: 10px;">LLM Architecture</a> <a href="/tags/Layout/" style="font-size: 10px;">Layout</a> <a href="/tags/LoRA/" style="font-size: 10px;">LoRA</a> <a href="/tags/Machine-Learning/" style="font-size: 16px;">Machine Learning</a> <a href="/tags/Metrics/" style="font-size: 10px;">Metrics</a> <a href="/tags/Microservices/" style="font-size: 10px;">Microservices</a> <a href="/tags/MoE/" style="font-size: 10px;">MoE</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/Multimodal-AI/" style="font-size: 10px;">Multimodal AI</a> <a href="/tags/NLP/" style="font-size: 12px;">NLP</a> <a href="/tags/Nature/" style="font-size: 10px;">Nature</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/Optimization/" style="font-size: 10px;">Optimization</a> <a href="/tags/PEFT/" style="font-size: 10px;">PEFT</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/Quality-Assurance/" style="font-size: 10px;">Quality Assurance</a> <a href="/tags/Quantization/" style="font-size: 10px;">Quantization</a> <a href="/tags/RAG/" style="font-size: 10px;">RAG</a> <a href="/tags/React/" style="font-size: 12px;">React</a> <a href="/tags/Reflection/" style="font-size: 12px;">Reflection</a> <a href="/tags/Research/" style="font-size: 10px;">Research</a> <a href="/tags/Research-Integrity/" style="font-size: 10px;">Research Integrity</a> <a href="/tags/Student-Life/" style="font-size: 12px;">Student Life</a> <a href="/tags/StudentDeveloper/" style="font-size: 20px;">StudentDeveloper</a> <a href="/tags/Testing/" style="font-size: 10px;">Testing</a> <a href="/tags/Trends/" style="font-size: 10px;">Trends</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/UI-UX/" style="font-size: 10px;">UI/UX</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/Web-Development/" style="font-size: 14px;">Web Development</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">November 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/06/20/index/">Welcome to My Notebook</a>
+          </li>
+        
+          <li>
+            <a href="/2025/06/11/ai-in-webdev-2025/">Seeing My Coursework Everywhere: An AI Student&#39;s Look at Web Development</a>
+          </li>
+        
+          <li>
+            <a href="/2025/04/30/testing-strategies/">From &#39;Does It Work?&#39; to &#39;Will It Break?&#39;: My Evolution in Software Testing</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/28/llm-evaluation-metrics/">Grappling with LLM Evaluation: A Student&#39;s Field Notes</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/25/nodejs-microservices/">From Monolith to Microservices: A Student&#39;s Journey with Node.js</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Zhaokun<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

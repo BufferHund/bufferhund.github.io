@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>From Monolith to Microservices: A Student&#39;s Journey with Node.js | Zhaokun&#39;s Blog 2025</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="From Monolith to Microservices: A Student’s Journey with Node.jsFor my final software architecture course, we had to build a small e-commerce application. Like most students, I started by building a “">
+<meta property="og:type" content="article">
+<meta property="og:title" content="From Monolith to Microservices: A Student&#39;s Journey with Node.js">
+<meta property="og:url" content="https://bufferhund.github.io/2025/03/25/nodejs-microservices/index.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Blog 2025">
+<meta property="og:description" content="From Monolith to Microservices: A Student’s Journey with Node.jsFor my final software architecture course, we had to build a small e-commerce application. Like most students, I started by building a “">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2025-03-25T14:30:00.000Z">
+<meta property="article:modified_time" content="2025-03-29T23:00:00.000Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="StudentDeveloper">
+<meta property="article:tag" content="Node.js">
+<meta property="article:tag" content="Microservices">
+<meta property="article:tag" content="Backend">
+<meta property="article:tag" content="Architecture">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Zhaokun's Blog 2025" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Zhaokun&#39;s Blog 2025</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">Full Stack Developer | ML/NLP/LLM</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://bufferhund.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-nodejs-microservices" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2025/03/25/nodejs-microservices/" class="article-date">
+  <time class="dt-published" datetime="2025-03-25T14:30:00.000Z" itemprop="datePublished">2025-03-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/WebDev/">WebDev</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      From Monolith to Microservices: A Student&#39;s Journey with Node.js
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="From-Monolith-to-Microservices-A-Student’s-Journey-with-Node-js"><a href="#From-Monolith-to-Microservices-A-Student’s-Journey-with-Node-js" class="headerlink" title="From Monolith to Microservices: A Student’s Journey with Node.js"></a>From Monolith to Microservices: A Student’s Journey with Node.js</h1><p>For my final software architecture course, we had to build a small e-commerce application. Like most students, I started by building a “monolith.” All my code—user authentication, product catalog, and order processing—was in a single Node.js Express application, connected to a single database. It worked, and it was simple to get started.</p>
+<p>But then, the requirements started getting more complex. A change to the order processing logic could accidentally break the user login. The database schema became a tangled mess. Deploying a small fix required re-deploying the entire application. Our professor then introduced us to the concept of microservices, and we decided to refactor our monolith. It was a challenging but incredibly valuable experience.</p>
+<h2 id="The-Big-Breakup-Deconstructing-the-Monolith"><a href="#The-Big-Breakup-Deconstructing-the-Monolith" class="headerlink" title="The Big Breakup: Deconstructing the Monolith"></a>The Big Breakup: Deconstructing the Monolith</h2><p>The first step was to identify the “bounded contexts” of our application. We broke our single application into three smaller, independent services:</p>
+<ol>
+<li><strong>User Service:</strong> Responsible for everything related to users: registration, login, profiles. It had its own database with just the <code>users</code> table.</li>
+<li><strong>Product Service:</strong> Managed the product catalog. It had its own database with the <code>products</code> table.</li>
+<li><strong>Order Service:</strong> Handled the shopping cart and order processing. It had its own database with the <code>orders</code> table.</li>
+</ol>
+<p>Each service was a completely separate Node.js application. This was the core principle of microservices: independent deployment and a database per service.</p>
+<h2 id="The-New-Boss-The-API-Gateway"><a href="#The-New-Boss-The-API-Gateway" class="headerlink" title="The New Boss: The API Gateway"></a>The New Boss: The API Gateway</h2><p>With our services separated, we immediately ran into a new problem: how does the frontend know which service to talk to? The solution was to introduce an <strong>API Gateway</strong>.</p>
+<p>The API Gateway is a single entry point for all incoming requests. It acts like a traffic cop, routing requests to the appropriate service. A request to <code>/api/users</code> would go to the User Service, while a request to <code>/api/products</code> would go to the Product Service. This kept our frontend simple and decoupled it from the backend architecture.</p>
+<h2 id="How-Do-Services-Talk-to-Each-Other"><a href="#How-Do-Services-Talk-to-Each-Other" class="headerlink" title="How Do Services Talk to Each Other?"></a>How Do Services Talk to Each Other?</h2><p>This was the trickiest part. What happens when a new order is placed? The Order Service needs to tell the User Service to update the user’s order history.</p>
+<p>Our first instinct was to have the Order Service make a direct API call to the User Service. But our professor warned us that this creates tight coupling. If the User Service is down, the Order Service can’t place an order.</p>
+<p>The better solution was <strong>event-driven communication</strong>. We set up a simple event bus (using a library like RabbitMQ, though for our simple project, Node’s <code>EventEmitter</code> was enough to learn the concept). When the Order Service placed an order, it didn’t call the User Service directly. Instead, it published an <code>order.placed</code> event. Other services, like the User Service or a new Notification Service, could then <em>subscribe</em> to this event and react accordingly. This decoupled our services completely. They didn’t need to know about each other; they only needed to know about the events.</p>
+<h2 id="Staying-Resilient-The-Circuit-Breaker"><a href="#Staying-Resilient-The-Circuit-Breaker" class="headerlink" title="Staying Resilient: The Circuit Breaker"></a>Staying Resilient: The Circuit Breaker</h2><p>What if our Product Service needed to call an external API to get shipping rates, and that external API was slow or down? We didn’t want our entire Product Service to fail because of a problem with a third-party service.</p>
+<p>This is where we learned about the <strong>Circuit Breaker pattern</strong>. A circuit breaker wraps our external API calls. If it detects too many failures, it “opens the circuit” and immediately fails any new requests without even trying to call the slow API. After a timeout, it enters a “half-open” state to see if the external API has recovered. This prevented a single point of failure from cascading through our entire system.</p>
+<h2 id="The-Lesson-Complexity-is-a-Trade-off"><a href="#The-Lesson-Complexity-is-a-Trade-off" class="headerlink" title="The Lesson: Complexity is a Trade-off"></a>The Lesson: Complexity is a Trade-off</h2><p>Moving from a monolith to microservices was a huge learning experience. It introduced a lot of new complexity: we had to manage multiple databases, set up an API Gateway, and think about inter-service communication. But the benefits were clear. Our services were smaller and easier to understand. We could deploy a fix to the Product Service without touching the User Service. And it forced us to think about resilience and fault tolerance in a way we never had to with our monolith.</p>
+<p>For a student, it’s a powerful lesson in software design. It’s not about which architecture is “best,” but about understanding the trade-offs and choosing the right tool for the job. </p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://bufferhund.github.io/2025/03/25/nodejs-microservices/" data-id="cmd80kemk000smlghbjkuhe1x" data-title="From Monolith to Microservices: A Student&#39;s Journey with Node.js" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Backend/" rel="tag">Backend</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Microservices/" rel="tag">Microservices</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Node-js/" rel="tag">Node.js</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/StudentDeveloper/" rel="tag">StudentDeveloper</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2025/03/28/llm-evaluation-metrics/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Grappling with LLM Evaluation: A Student&#39;s Field Notes
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2025/02/22/moe-mcp-llm/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Trying to Understand MoE: How LLMs Get Both Bigger and Smarter</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Life/">Life+</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/ML-NLP/">ML/NLP</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/WebDev/">WebDev</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/AI/" rel="tag">AI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Angular/" rel="tag">Angular</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Architecture/" rel="tag">Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Backend/" rel="tag">Backend</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Best-Practices/" rel="tag">Best Practices</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CSS/" rel="tag">CSS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Computer-Vision/" rel="tag">Computer Vision</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Data-Contamination/" rel="tag">Data Contamination</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Design-Systems/" rel="tag">Design Systems</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Evaluation/" rel="tag">Evaluation</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Fine-tuning/" rel="tag">Fine-tuning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Flexbox/" rel="tag">Flexbox</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frameworks/" rel="tag">Frameworks</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Frontend/" rel="tag">Frontend</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Germany/" rel="tag">Germany</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Grad-School/" rel="tag">Grad School</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Grid/" rel="tag">Grid</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Growth/" rel="tag">Growth</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hardware/" rel="tag">Hardware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Heidelberg/" rel="tag">Heidelberg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hiking/" rel="tag">Hiking</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Hooks/" rel="tag">Hooks</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Information-Retrieval/" rel="tag">Information Retrieval</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/" rel="tag">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LLM/" rel="tag">LLM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LLM-Architecture/" rel="tag">LLM Architecture</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Layout/" rel="tag">Layout</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LoRA/" rel="tag">LoRA</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Machine-Learning/" rel="tag">Machine Learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Metrics/" rel="tag">Metrics</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Microservices/" rel="tag">Microservices</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MoE/" rel="tag">MoE</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Model-Compression/" rel="tag">Model Compression</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Multimodal-AI/" rel="tag">Multimodal AI</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/NLP/" rel="tag">NLP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nature/" rel="tag">Nature</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Node-js/" rel="tag">Node.js</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Optimization/" rel="tag">Optimization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PEFT/" rel="tag">PEFT</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Performance/" rel="tag">Performance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Quality-Assurance/" rel="tag">Quality Assurance</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Quantization/" rel="tag">Quantization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAG/" rel="tag">RAG</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/React/" rel="tag">React</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Reflection/" rel="tag">Reflection</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Research/" rel="tag">Research</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Research-Integrity/" rel="tag">Research Integrity</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Student-Life/" rel="tag">Student Life</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/StudentDeveloper/" rel="tag">StudentDeveloper</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Testing/" rel="tag">Testing</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Trends/" rel="tag">Trends</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/TypeScript/" rel="tag">TypeScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/UI-UX/" rel="tag">UI&#x2F;UX</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Vue/" rel="tag">Vue</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web-Development/" rel="tag">Web Development</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/AI/" style="font-size: 10px;">AI</a> <a href="/tags/Angular/" style="font-size: 10px;">Angular</a> <a href="/tags/Architecture/" style="font-size: 10px;">Architecture</a> <a href="/tags/Backend/" style="font-size: 10px;">Backend</a> <a href="/tags/Best-Practices/" style="font-size: 10px;">Best Practices</a> <a href="/tags/CSS/" style="font-size: 10px;">CSS</a> <a href="/tags/Computer-Vision/" style="font-size: 10px;">Computer Vision</a> <a href="/tags/Data-Contamination/" style="font-size: 10px;">Data Contamination</a> <a href="/tags/Design-Systems/" style="font-size: 10px;">Design Systems</a> <a href="/tags/Evaluation/" style="font-size: 10px;">Evaluation</a> <a href="/tags/Fine-tuning/" style="font-size: 10px;">Fine-tuning</a> <a href="/tags/Flexbox/" style="font-size: 10px;">Flexbox</a> <a href="/tags/Frameworks/" style="font-size: 10px;">Frameworks</a> <a href="/tags/Frontend/" style="font-size: 14px;">Frontend</a> <a href="/tags/Germany/" style="font-size: 10px;">Germany</a> <a href="/tags/Grad-School/" style="font-size: 16px;">Grad School</a> <a href="/tags/Grid/" style="font-size: 10px;">Grid</a> <a href="/tags/Growth/" style="font-size: 10px;">Growth</a> <a href="/tags/Hardware/" style="font-size: 10px;">Hardware</a> <a href="/tags/Heidelberg/" style="font-size: 12px;">Heidelberg</a> <a href="/tags/Hiking/" style="font-size: 10px;">Hiking</a> <a href="/tags/Hooks/" style="font-size: 10px;">Hooks</a> <a href="/tags/Information-Retrieval/" style="font-size: 10px;">Information Retrieval</a> <a href="/tags/JavaScript/" style="font-size: 14px;">JavaScript</a> <a href="/tags/LLM/" style="font-size: 18px;">LLM</a> <a href="/tags/LLM-Architecture/" style="font-size: 10px;">LLM Architecture</a> <a href="/tags/Layout/" style="font-size: 10px;">Layout</a> <a href="/tags/LoRA/" style="font-size: 10px;">LoRA</a> <a href="/tags/Machine-Learning/" style="font-size: 16px;">Machine Learning</a> <a href="/tags/Metrics/" style="font-size: 10px;">Metrics</a> <a href="/tags/Microservices/" style="font-size: 10px;">Microservices</a> <a href="/tags/MoE/" style="font-size: 10px;">MoE</a> <a href="/tags/Model-Compression/" style="font-size: 10px;">Model Compression</a> <a href="/tags/Multimodal-AI/" style="font-size: 10px;">Multimodal AI</a> <a href="/tags/NLP/" style="font-size: 12px;">NLP</a> <a href="/tags/Nature/" style="font-size: 10px;">Nature</a> <a href="/tags/Node-js/" style="font-size: 10px;">Node.js</a> <a href="/tags/Optimization/" style="font-size: 10px;">Optimization</a> <a href="/tags/PEFT/" style="font-size: 10px;">PEFT</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/Quality-Assurance/" style="font-size: 10px;">Quality Assurance</a> <a href="/tags/Quantization/" style="font-size: 10px;">Quantization</a> <a href="/tags/RAG/" style="font-size: 10px;">RAG</a> <a href="/tags/React/" style="font-size: 12px;">React</a> <a href="/tags/Reflection/" style="font-size: 12px;">Reflection</a> <a href="/tags/Research/" style="font-size: 10px;">Research</a> <a href="/tags/Research-Integrity/" style="font-size: 10px;">Research Integrity</a> <a href="/tags/Student-Life/" style="font-size: 12px;">Student Life</a> <a href="/tags/StudentDeveloper/" style="font-size: 20px;">StudentDeveloper</a> <a href="/tags/Testing/" style="font-size: 10px;">Testing</a> <a href="/tags/Trends/" style="font-size: 10px;">Trends</a> <a href="/tags/TypeScript/" style="font-size: 10px;">TypeScript</a> <a href="/tags/UI-UX/" style="font-size: 10px;">UI/UX</a> <a href="/tags/Vue/" style="font-size: 10px;">Vue</a> <a href="/tags/Web-Development/" style="font-size: 14px;">Web Development</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/06/">June 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/03/">March 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/02/">February 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/01/">January 2025</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/12/">December 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/11/">November 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/10/">October 2024</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2024/09/">September 2024</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2025/06/20/index/">Welcome to My Notebook</a>
+          </li>
+        
+          <li>
+            <a href="/2025/06/11/ai-in-webdev-2025/">Seeing My Coursework Everywhere: An AI Student&#39;s Look at Web Development</a>
+          </li>
+        
+          <li>
+            <a href="/2025/04/30/testing-strategies/">From &#39;Does It Work?&#39; to &#39;Will It Break?&#39;: My Evolution in Software Testing</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/28/llm-evaluation-metrics/">Grappling with LLM Evaluation: A Student&#39;s Field Notes</a>
+          </li>
+        
+          <li>
+            <a href="/2025/03/25/nodejs-microservices/">From Monolith to Microservices: A Student&#39;s Journey with Node.js</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2025 Zhaokun<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
