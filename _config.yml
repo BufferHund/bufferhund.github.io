@@ -3,13 +3,21 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: My Hexo Blog
-subtitle: 'Welcome to my blog'
-description: 'A personal blog built with Hexo'
-keywords: blog, hexo, personal
-author: Your Name
-language: zh-CN
-timezone: ''
+title: Zhaokun's Space
+subtitle: 'Full stack webdev | ML/NLP/LLM'
+description: 'Thoughts on UI/UX, full-stack architecture, and intelligent tools'
+keywords:
+  - Full Stack
+  - Web Development
+  - UI/UX
+  - Machine Learning
+  - NLP
+  - LLM
+  - AI Engineering
+  - Developer Productivity
+author: Zhaokun
+language: en
+timezone: 'Europe/Berlin'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -96,11 +104,11 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
-  repo: https://github.com/bufferhund/bufferhund.github.io.git
+  repo: https://github.com/BufferHund/bufferhund.github.io.git
   branch: main

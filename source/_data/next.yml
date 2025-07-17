@@ -1,0 +1,412 @@
+# ===============================================================
+# NexT Theme Configuration
+# ===============================================================
+
+# ---------------------------------------------------------------
+# Theme Core Configuration Settings
+# ---------------------------------------------------------------
+
+# Allow to cache content generation.
+cache:
+  enable: true
+
+# Remove unnecessary files after hexo generate.
+minify: false
+
+# ---------------------------------------------------------------
+# Scheme Settings
+# ---------------------------------------------------------------
+
+# Schemes
+scheme: Gemini
+#scheme: Muse
+#scheme: Mist
+#scheme: Pisces
+
+# Dark Mode
+darkmode: false
+
+# ---------------------------------------------------------------
+# Site Information Settings
+# ---------------------------------------------------------------
+
+favicon:
+  small: /images/favicon-16x16-next.png
+  medium: /images/favicon-32x32-next.png
+  apple_touch_icon: /images/apple-touch-icon-next.png
+  safari_pinned_tab: /images/logo.svg
+
+# Custom Logo
+custom_logo: #/uploads/custom-logo.png
+
+# Creative Commons 4.0 International License.
+creative_commons:
+  license: by-nc-sa
+  size: small
+  sidebar: false
+  post: false
+
+# Open graph settings
+open_graph:
+  enable: true
+  options:
+    twitter_card: summary_large_image
+
+# ---------------------------------------------------------------
+# Menu Settings
+# ---------------------------------------------------------------
+
+menu:
+  home: / || fa fa-home
+  about: /about/ || fa fa-user
+  projects: /projects/ || fa fa-code
+  tags: /tags/ || fa fa-tags
+  categories: /categories/ || fa fa-th
+  archives: /archives/ || fa fa-archive
+
+# Enable / Disable menu icons / item badges.
+menu_settings:
+  icons: true
+  badges: false
+
+# ---------------------------------------------------------------
+# Sidebar Settings
+# ---------------------------------------------------------------
+
+sidebar:
+  # Sidebar position. Available values: left | right
+  position: left
+
+  # Sidebar width.
+  width_expanded: 320
+  width_dual_column: 240
+
+  # Sidebar display.
+  display: post
+
+  # Sidebar padding in pixels.
+  padding: 18
+  # Sidebar offset from top menubar in pixels.
+  offset: 12
+
+# Sidebar Avatar
+avatar:
+  url: #/images/avatar.gif
+  rounded: false
+  rotated: false
+
+# Posts / Categories / Tags in sidebar.
+site_state: true
+
+# Social Links
+social:
+  GitHub: https://github.com/BufferHund || fab fa-github
+  LinkedIn: https://www.linkedin.com/in/zhaokun-wang-8802452a9 || fab fa-linkedin
+  Website: https://www.iamzhaokun.com || fa fa-globe
+
+social_icons:
+  enable: true
+  icons_only: false
+  transition: false
+
+# Table of Contents in the Sidebar
+toc:
+  enable: true
+  number: true
+  wrap: false
+  expand_all: false
+  max_depth: 6
+
+# ---------------------------------------------------------------
+# Footer Settings
+# ---------------------------------------------------------------
+
+footer:
+  # Specify the date when the site was setup.
+  # If not defined, current year will be used.
+  since: 2024
+
+  # Icon between year and copyright info.
+  icon:
+    # Icon name in fontawesome, see: https://fontawesome.com/v4.7.0/icons/
+    # `heart` is recommended with animation in red (#ff0000).
+    name: heart
+    # If you want to animate the icon, set it to true.
+    animated: true
+    # Change the color of icon, using Hex Code.
+    color: "#ff0000"
+
+  # If not defined, `author` from Hexo main config will be used.
+  copyright: Zhaokun
+  # Hexo link (Powered by Hexo).
+  powered: true
+
+  # Beian ICP and gongan information for Chinese sites. See: https://beian.miit.gov.cn, http://www.beian.gov.cn
+  # beian:
+  #   enable: false
+  #   icp:
+  #   # The digit in the num of gongan beian.
+  #   gongan_id:
+  #   # The full num of gongan beian.
+  #   gongan_num:
+  #   # The icon for gongan beian. See: http://www.beian.gov.cn/portal/download
+  #   gongan_icon_url:
+
+# ---------------------------------------------------------------
+# Post Settings
+# ---------------------------------------------------------------
+
+# Automatically excerpt description in homepage as preamble text.
+excerpt_description: true
+
+# Automatically excerpt description (not excerpt_description) in homepage as preamble text length.
+excerpt_length: 150
+
+# Read more button
+# If true, the read more button will be displayed in excerpt.
+read_more_btn: true
+
+# ---------------------------------------------------------------
+# Code Highlight Theme
+# ---------------------------------------------------------------
+
+# Available values:
+#    normal | night | night eighties | night blue | night bright
+# https://github.com/chriskempson/tomorrow-theme
+highlight_theme: normal
+
+# ---------------------------------------------------------------
+# Math Equations
+# ---------------------------------------------------------------
+
+# Math Equations Render Support
+math:
+  enable: false
+  # Default (true) will load mathjax / katex script on demand.
+  # That is it only render those page which has `mathjax: true` in front-matter.
+  # If you set it to false, it will load mathjax / katex script every page.
+  per_page: true
+
+  # hexo-renderer-pandoc (or hexo-renderer-kramed) required for full MathJax support.
+  mathjax:
+    enable: false
+    # Available values: block2 | block3 | inline2 | inline3
+    mhchem: false
+
+  # hexo-renderer-markdown-it-plus (or hexo-renderer-markdown-it with markdown-it-katex plugin) required for full Katex support.
+  katex:
+    enable: false
+    # See: https://github.com/KaTeX/KaTeX/tree/master/contrib/copy-tex
+    copy_tex: false
+
+# ---------------------------------------------------------------
+# External link settings
+# ---------------------------------------------------------------
+
+# External link icon
+exturl: false
+
+# ---------------------------------------------------------------
+# Tag Plugins
+# ---------------------------------------------------------------
+
+# Note tag (bs-callout).
+note:
+  # Note tag style values:
+  #  - simple    bs-callout old alert style. Default.
+  #  - modern    bs-callout new (v2-v3) alert style.
+  #  - flat      flat callout style with background, like on GitHub or GitBook.
+  #  - disabled  disable all CSS styles import of note tag.
+  style: simple
+  icons: false
+  # Offset lighter of background in % for modern and flat styles (modern: -12 | 12; flat: -18 | 6).
+  # Offset also applied to label tag variables. This option will work only in dark theme.
+  light_bg_offset: 0
+
+# Tabs tag
+tabs:
+  enable: false
+  transition:
+    tabs: false
+    labels: true
+
+  # Leave empty for the default icons
+  icons:
+
+# ---------------------------------------------------------------
+# Search Services
+# ---------------------------------------------------------------
+
+# Local search
+# Dependencies: https://github.com/next-theme/hexo-generator-searchdb
+local_search:
+  enable: false
+  # If auto, trigger search by changing input.
+  # If manual, trigger search by pressing enter key or search button.
+  trigger: auto
+  # Show top n results per article, show all results by setting to -1
+  top_n_per_article: 1
+  # Unescape html strings to the readable one.
+  unescape: false
+  # Preload the search data when the page loads.
+  preload: false
+
+# Algolia Search
+algolia_search:
+  enable: false
+  hits:
+    per_page: 10
+  labels:
+    input_placeholder: Search for Posts
+    hits_empty: "We didn't find any results for the search: ${query}"
+    hits_stats: "${hits} results found in ${time} ms"
+
+# ---------------------------------------------------------------
+# Comments
+# ---------------------------------------------------------------
+
+# Multiple Comment System Support
+comments:
+  # Available values: tabs | buttons
+  style: tabs
+  # Choose a comment system to be displayed by default.
+  # Available values: changyan | disqus | disqusjs | gitalk | livere | valine | vssue
+  active:
+  # Setting `true` means remembering the comment system selected by the visitor.
+  storage: true
+  # Lazyload all comment systems.
+  lazyload: false
+  # Modify texts or order for any navs, here are some examples.
+  nav:
+    #disqus:
+    #  text: Load Disqus
+    #  order: -1
+    #gitalk:
+    #  order: -2
+
+# ---------------------------------------------------------------
+# Page Settings
+# ---------------------------------------------------------------
+
+# Automatically add list number to toc.
+toc:
+  enable: true
+  # Automatically add list number to toc.
+  number: true
+  # If true, all words will placed on next lines if header width longer then sidebar width.
+  wrap: false
+  # If true, all level of TOC in a post will be displayed, rather than the activated part of it.
+  expand_all: false
+  # Maximum heading depth of generated toc.
+  max_depth: 6
+
+# ---------------------------------------------------------------
+# Misc Theme Settings
+# ---------------------------------------------------------------
+
+# Reduce padding / margin indents on devices.
+on_catalog_page: false
+
+# Automatically scroll page to section which is under <!-- more --> mark.
+scroll_to_more: true
+
+# Automatically saving scroll position on each post/page in cookies.
+save_scroll: false
+
+# Automatically loading page content on 'Save Scroll' when the page has scroll position.
+load_scroll: false
+
+# Enable page animation when page loads.
+motion:
+  enable: true
+  async: false
+  transition:
+    # Transition variants:
+    # fadeIn | fadeInUp | fadeInDown | fadeInLeft | fadeInRight |
+    # fadeOutUp | fadeOutDown | fadeOutLeft | fadeOutRight |
+    # slideInUp | slideInDown | slideInLeft | slideInRight |
+    # slideOutUp | slideOutDown | slideOutLeft | slideOutRight |
+    post_block: fadeInUp
+    post_header: slideInDown
+    post_body: slideInDown
+    coll_header: slideInLeft
+    # Only for Pisces | Gemini.
+    sidebar: slideInUp
+
+# Progress bar in the top during page loading.
+pace:
+  enable: false
+  # All available colors:
+  # black | blue | green | orange | red | purple | white | yellow
+  color: blue
+  # All available themes:
+  # big-counter | bounce | center-atom | center-circle | center-radar | center-simple
+  # corner-indicator | fill-left | flat-top | flash | loading-bar | mac-osx | material | minimal
+  theme: minimal
+
+# JavaScript 3D library.
+# Dependencies: https://github.com/mrdoob/three.js
+canvas_ribbon:
+  enable: false
+  size: 150
+  alpha: 0.6
+  zIndex: -1
+
+# JavaScript 3D library.
+# Dependencies: https://github.com/jjandxa/canvas-nest
+canvas_nest:
+  enable: false
+  onmobile: true
+  color: '0,0,255'
+  opacity: 0.5
+  zIndex: -1
+  count: 99
+
+# ---------------------------------------------------------------
+# Font Settings
+# ---------------------------------------------------------------
+
+# Find fonts on Google Fonts (https://fonts.google.com/)
+# All fonts set below will have the following styles:
+#   light | normal | bold | bolder
+# Be aware that setting too much fonts can cause sites to load slowly
+# Disable this section by deleting `font:`.
+font:
+  enable: false
+
+  # Uri of fonts host, e.g. https://fonts.googleapis.com (Default).
+  host:
+
+  # Font options:
+  # `external: true` will load this font family from `host` above.
+  # `family: Times New Roman`. Without any quotes.
+  # `size: x.x`. Use `em` as unit. Default: 1 (16px)
+
+  # Global font settings used for all elements inside <body>.
+  global:
+    external: true
+    family: Lato
+    size:
+
+  # Font settings for site title (.site-title).
+  site:
+    external: true
+    family:
+    size:
+
+  # Font settings for posts (.post-body).
+  posts:
+    external: true
+    family:
+
+  # Font settings for Logo (.brand).
+  logo:
+    external: true
+    family:
+    size:
+
+  # Font settings for <code> and code blocks.
+  codes:
+    external: true
+    family:
+    size: 
