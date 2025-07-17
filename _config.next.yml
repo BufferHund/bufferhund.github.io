@@ -289,16 +289,7 @@ comments:
 # ---------------------------------------------------------------
 
 # Automatically add list number to toc.
-toc:
-  enable: true
-  # Automatically add list number to toc.
-  number: true
-  # If true, all words will placed on next lines if header width longer then sidebar width.
-  wrap: false
-  # If true, all level of TOC in a post will be displayed, rather than the activated part of it.
-  expand_all: false
-  # Maximum heading depth of generated toc.
-  max_depth: 6
+# Note: This is handled by the sidebar toc configuration above
 
 # ---------------------------------------------------------------
 # Misc Theme Settings
