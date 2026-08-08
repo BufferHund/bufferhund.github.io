@@ -327,3 +327,15 @@ redefine-tablet()
 .markdown-body mjx-container[display="true"] svg {
   display: inline-block;
 }
+.markdown-body .it-trans {
+  margin: 8px 0 8px 14px;
+  padding: 8px 12px;
+  color: var(--third-text-color);
+  font-size: 0.95em;
+  line-height: 1.75;
+  border-left: 3px solid var(--third-background-color);
+  background: var(--third-background-color);
+}
+.markdown-body .it-hide-source .it-source {
+  display: none;
+}

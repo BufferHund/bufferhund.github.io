@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Full Stack,Web Development,Machine Learning,NLP,LLM,Technology">
+    
+    <meta name="author" content="Zhaokun Wang">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://bufferhund.github.io/de/2024/10/25/did-the-model-reason-or-has-it-seen-the-answer-before/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hat das Modell argumentiert – oder hat es die Antwort schon einmal gesehen?">
+<meta property="og:url" content="https://bufferhund.github.io/de/2024/10/25/did-the-model-reason-or-has-it-seen-the-answer-before/index.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Blog 2025">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="de_DE">
+<meta property="og:image" content="https://bufferhund.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2024-10-25T09:15:00.000Z">
+<meta property="article:modified_time" content="2026-08-08T18:06:12.994Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="Evaluation">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="Quantization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bufferhund.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Hat das Modell argumentiert – oder hat es die Antwort schon einmal gesehen? | Zhaokun&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"bufferhund.github.io","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Zhaokun's Blog","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/BufferHund","instagram":null,"zhihu":null,"linkedin":"https://www.linkedin.com/in/zhaokun-wang-8802452a9","mail":null,"email":"mailto:wang@cl.uni-heidelberg.de"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Research":{"path":"/research","icon":"fa-regular fa-brain"},"Projects":{"path":"/projects","icon":"fa-regular fa-project-diagram"},"Talks":{"path":"/talks","icon":"fa-regular fa-comments"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"path":"/about","icon":"fa-regular fa-user"}},"search":{"enable":false,"preload":false},"langs":{"enable":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    <script id="hexo-i18n-dicts" type="application/json">
+{"en":{"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","research":"Research","projects":"Projects","talks":"Talks","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."},"de":{"search":"Suchen...","toc":"Auf dieser Seite","prev":"Zurück","next":"Weiter","prev_posts":"Vorherige Beiträge","next_posts":"Nächste Beiträge","page":"Seite %d","recent_posts":"Neueste Beiträge","share":"Teilen","powered_by":"ANGETRIEBEN VON %s","theme":"THEME","rss_feed":"RSS-Feed","category":"Kategorie","categories":"Kategorien","tag":"Schlagwort","tags":"Schlagwörter","post":"Beitrag","posts":"Beiträge","tagcloud":"Schlagwörter-Wolke","comment":"Kommentar","comments":"Kommentare","home":"Start","research":"Forschung","projects":"Projekte","talks":"Vorträge","archive":"Archiv","archives":"Archive","top":"NACH OBEN","sticky":"Angeheftet","go-back-home":"Zurück zur Startseite","about":"Über","changelog":"Änderungsprotokoll","links":"Links","link":"Link","friends":"Freunde","friend":"Freund","timeline":"Zeitleiste","shuoshuo":"Shuoshuo","site_uv":"BESUCHERZAHL","site_pv":"GESAMTSEITENAUFRUFE","read_more":"Weiterlesen","wordcount":"Wörter","min2read":"Min","status":"Status","runtime":"Blog online seit","days":"Tagen","hours":"Std","minutes":"Min","seconds":"Sek","optimized_by":"und optimiert von Evan","rights":"Alle Rechte vorbehalten","site_posts":"Insgesamt %s Beiträge","site_wordcount":"Insgesamt %s Wörter","copyright":{"author":"Autor","title":"Titel","link":"Link","create_time":"Erstellt am","update_time":"Aktualisiert am","license_title":"Lizenz","license_content":"Dieses Werk ist lizenziert unter %s.","all_rights_reserved":"Alle Rechte vorbehalten &#169; %s","public_domain":"Dieses Werk ist gemeinfrei."},"ago":{"second":"vor %s Sekunden","minute":"vor %s Minuten","hour":"vor %s Stunden","day":"vor %s Tagen","week":"vor %s Wochen","month":"vor %s Monaten","year":"vor %s Jahren"},"create_time":"Erstellt","update_time":"Aktualisiert","expired":"Dieser Beitrag wurde vor %s Tagen verfasst, der Inhalt ist möglicherweise nicht mehr aktuell."},"zh-CN":{"search":"站内搜索您需要的内容...","toc":"目录","prev":"上一页","next":"下一页","prev_posts":"上一篇","next_posts":"下一篇","page":"第 %d 页","recent_posts":"最新文章","share":"分享","powered_by":"由 %s 驱动","theme":"主题","rss_feed":"RSS Feed","category":"分类","categories":"分类","tag":"标签","tags":"标签","post":"文章","posts":"文章","tagcloud":"标签云","comment":"评论","comments":"评论","top":"置顶","sticky":"置顶","go-back-home":"回到首页","home":"首页","research":"研究","projects":"项目","talks":"学术报告","archive":"归档","archives":"归档","about":"关于","links":"链接","link":"链接","friends":"友情链接","friend":"友情链接","timeline":"时间轴","shuoshuo":"说说","site_uv":"访问人数","site_pv":"总访问量","read_more":"阅读全文","wordcount":"字","min2read":"分钟","changelog":"更新日志","status":"状态","runtime":"博客已运行","days":"天","hours":"小时","minutes":"分钟","seconds":"秒","optimized_by":"并由 Evan 进行优化","rights":"版权所有","site_posts":"共撰写了 %s 篇文章","site_wordcount":"共 %s 字","copyright":{"title":"标题","author":"作者","link":"链接","create_time":"创建于","update_time":"更新于","license_title":"版权声明","license_content":"本文章采用 %s 进行许可。","all_rights_reserved":"版权所有 &#169 %s，禁止转载。","public_domain":"本文为公有领域作品，可自由转载、引用。"},"ago":{"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"},"create_time":"创建","update_time":"更新","expired":"这篇文章最后更新于 %s 天前，内容可能已经过时。"}}
+</script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+
+    <!-- Language redirect: support ?lang=en|zh-CN|de|zh query params (for sharing links from resumes etc.) -->
+    <script>
+        (function () {
+            var m = /[?&]lang=([^&]+)/.exec(window.location.search);
+            if (!m) return;
+            var l = m[1].toLowerCase();
+            var map = { "en": "en", "zh-cn": "zh-CN", "zh": "zh-CN", "cn": "zh-CN", "chinese": "zh-CN", "de": "de", "deutsch": "de", "german": "de" };
+            var lang = map[l];
+            if (!lang) return;
+            var p = window.location.pathname;
+            if (lang === "en") {
+                p = p.replace(/^\/(zh-CN|zh-cn|de)\//, "/");
+            } else {
+                p = "/" + lang + p.replace(/^\/(zh-CN|zh-cn|de)\//, "/");
+            }
+            if (p !== window.location.pathname) {
+                window.location.replace(p);
+            }
+        })();
+    </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			
+<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/de/">
+                
+                Zhaokun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    <span data-i18n="home">START</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/research"
+                                        >
+                                    <i class="fa-regular fa-brain fa-fw"></i>
+                                    <span data-i18n="research">FORSCHUNG</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/projects"
+                                        >
+                                    <i class="fa-regular fa-project-diagram fa-fw"></i>
+                                    <span data-i18n="projects">PROJEKTE</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/talks"
+                                        >
+                                    <i class="fa-regular fa-comments fa-fw"></i>
+                                    <span data-i18n="talks">VORTRÄGE</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    <span data-i18n="archives">ARCHIVE</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/about"
+                                        >
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    <span data-i18n="about">ÜBER</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                    
+                        <li class="navbar-item navbar-lang-switch navbar-lang-dropdown-container" title="Site language">
+                            <i class="fa-solid fa-globe"></i>
+                            <ul class="navbar-lang-dropdown">
+                                <li><a href="#" data-lang="en">English</a></li>
+                                <li><a href="#" data-lang="zh-CN">简体中文</a></li>
+                                <li><a href="#" data-lang="de">Deutsch</a></li>
+                            </ul>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/"
+                        >
+                            <span data-i18n="home">
+                                START
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/research"
+                        >
+                            <span data-i18n="research">
+                                FORSCHUNG
+                            </span>
+                            
+                                <i class="fa-regular fa-brain fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/projects"
+                        >
+                            <span data-i18n="projects">
+                                PROJEKTE
+                            </span>
+                            
+                                <i class="fa-regular fa-project-diagram fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/talks"
+                        >
+                            <span data-i18n="talks">
+                                VORTRÄGE
+                            </span>
+                            
+                                <i class="fa-regular fa-comments fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/archives"
+                        >
+                            <span data-i18n="archives">
+                                ARCHIVE
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/about"
+                        >
+                            <span data-i18n="about">
+                                ÜBER
+                            </span>
+                            
+                                <i class="fa-regular fa-user fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">45</div>
+        <div class="label text-third-text-color text-sm" data-i18n="tags">Schlagwörter</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm" data-i18n="categories">Kategorien</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">17</div>
+        <div class="label text-third-text-color text-sm" data-i18n="posts">Beiträge</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="page-template-container">
+	
+
+	
+
+	<div class="page-template-content markdown-body">
+		
+		<h1>Hat das Modell argumentiert – oder hat es die Antwort schon einmal gesehen?</h1>
+		
+
+		<h1 id="Hat-das-Modell-argumentiert-–-oder-hat-es-die-Antwort-schon-einmal-gesehen"><a href="#Hat-das-Modell-argumentiert-–-oder-hat-es-die-Antwort-schon-einmal-gesehen" class="headerlink" title="Hat das Modell argumentiert – oder hat es die Antwort schon einmal gesehen?"></a>Hat das Modell argumentiert – oder hat es die Antwort schon einmal gesehen?</h1><p><strong>Ein hoher benchmark-Wert kann auf starkes Denken, gute Mustererkennung, zufällige Vertrautheit mit dem Testsatz oder eine unangenehme Kombination aus allen dreien hinweisen.</strong></p>
+<hr>
+<p>Ich habe mir einmal ein Modellergebnis angesehen, das fast verdächtig gut war.</p>
+<p>Die Aufgabe war nicht unmöglich, aber sie war so schwierig, dass ich eine sichtbare Verteilung der Fehler erwartete: ein paar Rechenfehler, einige brüchige Argumente, vielleicht Verwirrung wegen ungewöhnlicher Formulierungen. Stattdessen bewegte sich das Modell mit bemerkenswerter Sicherheit durch die Beispiele.</p>
+<p>Meine erste Reaktion war die erfreuliche: Vielleicht war das Modell einfach besser, als ich erwartet hatte.</p>
+<p>Meine zweite Reaktion war weniger bequem:</p>
+<p><strong>Was wäre, wenn es diese Fragen bereits gesehen hätte?</strong></p>
+<p>Diese Frage klingt einfach, aber sie wirft ein überraschend schwieriges Bewertungsproblem auf.</p>
+<p>Wenn ein Sprachmodell bei einem benchmark 92 % erreicht, möchten wir diese Zahl natürlich als Beweis für die Leistungsfähigkeit interpretieren. Das Modell verstand die Aufgabe, argumentierte anhand unbekannter Beispiele und gab richtige Antworten.</p>
+<p>Aber der benchmark-Score selbst kann uns nicht sagen, <em>wie</em> die Antwort zustande kam.</p>
+<p>Ein Modell könnte wirklich verallgemeinern.</p>
+<p>Es könnte eine sehr bekannte Problemvorlage erkennen.</p>
+<p>Es könnte sich an Fragmente einer Antwort aus dem Training erinnern.</p>
+<p>Möglicherweise wurde die genaue benchmark-Frage auf GitHub, in einem Papieranhang, in einem benchmark-Repository, in generierten Trainingsdaten oder in den Modellausgaben einer anderen Person gefunden.</p>
+<p>Und da es sich bei modernen Trainingskorpora um riesige, teilweise nicht offengelegte, wiederholt gefilterte, deduplizierte, gemischte, regenerierte und destillierte Korpora handelt, ist die Unterscheidung dieser Fälle viel schwieriger als die Überprüfung, ob eine CSV-Datei im Vortrainingsdatensatz enthalten ist.</p>
+<p>Der benchmark-Score ist gestiegen.</p>
+<p>Ob das Modell intelligenter wurde, ist eine andere Frage.</p>
+<hr>
+<h2 id="Ein-benchmark-geht-stillschweigend-davon-aus-dass-das-Model-die-Prufung-nie-abgelegt-hat"><a href="#Ein-benchmark-geht-stillschweigend-davon-aus-dass-das-Model-die-Prufung-nie-abgelegt-hat" class="headerlink" title="Ein benchmark geht stillschweigend davon aus, dass das Model die Prüfung nie abgelegt hat"></a>Ein benchmark geht stillschweigend davon aus, dass das Model die Prüfung nie abgelegt hat</h2><p>Die meisten Benchmarks basieren auf einem impliziten Versuchsaufbau:</p>
+<pre><code class="language-text">training data
+     │
+     ▼
+┌───────────┐
+│   Model   │
+└───────────┘
+     │
+     │ previously unseen task
+     ▼
+┌───────────┐
+│ Benchmark │
+└───────────┘
+     │
+     ▼
+  Score
+</code></pre>
+<p>Die interessante Größe soll die Fähigkeit des Modells sein, von seinem erlernten Wissen und seinen Mechanismen zu einer Antwort zu gelangen, auf die es noch nie zuvor gestoßen ist.</p>
+<p>In der Terminologie des maschinellen Lernens legen wir Wert auf <strong>Verallgemeinerung</strong>.</p>
+<p>Betrachten Sie nun eine etwas andere Pipeline:</p>
+<pre><code class="language-text">benchmark
+   │
+   ├────────► webpage
+   ├────────► GitHub repository
+   ├────────► paper appendix
+   ├────────► tutorial
+   └────────► synthetic dataset
+                    │
+                    ▼
+               training corpus
+                    │
+                    ▼
+                 model
+                    │
+                    ▼
+               benchmark
+</code></pre>
+<p>Am endgültigen Bewertungsskript ändert sich nichts.</p>
+<p>Wir nennen immer noch:</p>
+<pre><code class="language-python">accuracy = evaluate(model, benchmark)
+</code></pre>
+<p>und erhalten Sie eine absolut respektable Gleitkommazahl.</p>
+<p>Aber seine Interpretation hat sich geändert.</p>
+<p>Der Testsatz dient nicht mehr nur dazu, die Übertragung auf unbekannte Beispiele zu testen. Ein Teil könnte stattdessen testen, ob die mit diesen Beispielen verbundenen Informationen das Training überstanden haben.</p>
+<p>Das ist benchmark Kontamination in ihrer einfachsten Form.</p>
+<p>Leider ist die echte Version chaotischer.</p>
+<hr>
+<h2 id="„Hat-das-Model-dieses-Beispiel-gesehen-“-ist-keine-binare-Frage"><a href="#„Hat-das-Model-dieses-Beispiel-gesehen-“-ist-keine-binare-Frage" class="headerlink" title="„Hat das Model dieses Beispiel gesehen?“ ist keine binäre Frage"></a>„Hat das Model dieses Beispiel gesehen?“ ist keine binäre Frage</h2><p>Ein nützliches mentales Modell besteht darin, Kontamination nicht mehr als boolesche Variable zu behandeln.</p>
+<p>Es gibt mehrere Ebenen der Vertrautheit.</p>
+<p>Stellen Sie sich vor, Sie bewerten diese Frage:</p>
+<blockquote>
+<p>A shop reduces a €120 item by 25%. What is the new price?</p>
+</blockquote>
+<p>Das Modell könnte auf Folgendes gestoßen sein:</p>
+<ol>
+<li><strong>Die genaue Frage und genaue Antwort</strong></li>
+<li>Dieselbe Frage mit leicht unterschiedlicher Formatierung</li>
+<li>Eine umschriebene Version mit „$120“.</li>
+<li>Dieselbe numerische Struktur mit unterschiedlichen Objekten</li>
+<li>Tausende Beispiele für Berechnungen von „25 % Rabatt“.</li>
+<li>Nur das zugrunde liegende mathematische Konzept</li>
+</ol>
+<p>Diese Situationen sind nicht gleichwertig.</p>
+<p>Letzteres ist genau das, was wir mit dem Training erreichen wollen. Ein Modell sollte allgemeine mathematische Muster anhand von Beispielen lernen.</p>
+<p>Die erste Frage kommt einer Antwort aus dem Gedächtnis viel näher.</p>
+<p>Die interessanten Fälle sind alles dazwischen.</p>
+<p>Dadurch entsteht ein Kontinuum:</p>
+<pre><code class="language-text">Exact memorization
+      │
+      ▼
+Near-duplicate recognition
+      │
+      ▼
+Template familiarity
+      │
+      ▼
+Task familiarity
+      │
+      ▼
+General learned capability
+</code></pre>
+<p>Die Grenze zwischen Auswendiglernen und Verallgemeinern ist nicht sauber.</p>
+<p>Das ist einer der Gründe, warum die Kontaminationserkennung schwierig wird: Selbst wenn ich das Trainingskorpus perfekt durchsuchen könnte, müsste ich dennoch entscheiden, welcher Grad der Ähnlichkeit eine Bewertung ungültig macht.</p>
+<hr>
+<h2 id="Durch-die-exakte-Ubereinstimmung-wird-die-leichte-Kontamination-erfasst"><a href="#Durch-die-exakte-Ubereinstimmung-wird-die-leichte-Kontamination-erfasst" class="headerlink" title="Durch die exakte Übereinstimmung wird die leichte Kontamination erfasst"></a>Durch die exakte Übereinstimmung wird die leichte Kontamination erfasst</h2><p>Wenn Trainingsdaten verfügbar sind, besteht der naheliegendste Test darin, nach benchmark-Beispielen zu suchen.</p>
+<p>Bei normalisierten Strings kann der erste Durchgang fast peinlich einfach sein:</p>
+<pre><code class="language-python">def normalize(text: str) -&gt; str:
+    return &quot; &quot;.join(text.lower().split())
+
+benchmark_question = normalize(question)
+
+if benchmark_question in normalized_training_corpus:
+    print(&quot;possible contamination&quot;)
+</code></pre>
+<p>Im größeren Maßstab würde ich es natürlich vermeiden, einen riesigen Korpus linear zu scannen. Sinnvoller sind Hashes, N-Gramm-Indizes, MinHash, ortsabhängiges Hashing oder eine Suchmaschine.</p>
+<p>Aber die zugrunde liegende Idee ist einfach.</p>
+<p>Eine genaue Überschneidung ist ein nützlicher Beweis.</p>
+<p>Es ist auch die einfachste Version des Problems.</p>
+<p>Angenommen, der benchmark enthält:</p>
+<blockquote>
+<p>Which planet is known as the Red Planet?</p>
+</blockquote>
+<p>und die Trainingsdaten enthalten:</p>
+<blockquote>
+<p><strong>Q:</strong> What planet is commonly called “the Red Planet”?<br><strong>A:</strong> Mars.</p>
+</blockquote>
+<p>Beim Matching auf Zeichenebene fehlt dies möglicherweise völlig.</p>
+<p>Das Einbetten von Ähnlichkeit könnte dies erkennen, aber jetzt haben wir Schwellenwerte eingeführt.</p>
+<p>Wie ähnlich ist verdächtig ähnlich?</p>
+<p>Ein Ähnlichkeitswert von „0,96“ ist wahrscheinlich interessant.</p>
+<p>Was ist mit „0,83“?</p>
+<p>Und wie unterscheiden wir einen kontaminierten benchmark-Eintrag von zwei unabhängig voneinander geschriebenen Fragen zu einer äußerst häufigen Tatsache?</p>
+<p>Je besser unser Detektor bei der semantischen Übereinstimmung wird, desto mehr fängt er an, legitime konzeptionelle Ähnlichkeiten zu erkennen.</p>
+<hr>
+<h2 id="Offentliche-Benchmarks-haben-ein-seltsames-Erfolgsproblem"><a href="#Offentliche-Benchmarks-haben-ein-seltsames-Erfolgsproblem" class="headerlink" title="Öffentliche Benchmarks haben ein seltsames Erfolgsproblem"></a>Öffentliche Benchmarks haben ein seltsames Erfolgsproblem</h2><p>Ein benchmark wird nützlicher, wenn Leute ihn verwenden.</p>
+<p>Leider macht die weit verbreitete Verwendung es auch schwieriger, es als unsichtbaren Test zu bewahren.</p>
+<p>Ein erfolgreicher benchmark erscheint in:</p>
+<ul>
+<li>repositories,</li>
+<li>model evaluation harnesses,</li>
+<li>research papers,</li>
+<li>issue discussions,</li>
+<li>tutorials,</li>
+<li>leaderboards,</li>
+<li>Hugging Face datasets,</li>
+<li>blog posts,</li>
+<li>notebooks,</li>
+<li>prompt collections,</li>
+<li>model-generated explanations.</li>
+</ul>
+<p>Dann werden diese Seiten zu potenziellen Trainingsdaten.</p>
+<p>Selbst wenn ein Modellentwickler das ursprüngliche benchmark-Repository explizit entfernt, können abgeleitete Versionen bestehen bleiben.</p>
+<p>Möglicherweise hat jemand den Datensatz von JSON in Markdown konvertiert.</p>
+<p>Eine andere Person hat möglicherweise falsche Fragen mit korrigierten Antworten gepostet.</p>
+<p>Ein Lehrer hat möglicherweise benchmark-Probleme in Übungen umgewandelt.</p>
+<p>Ein Modell hat möglicherweise Erklärungen für jedes benchmark-Element generiert, und diese Erklärungen können später in den Trainingskorpus eines anderen Modells aufgenommen werden.</p>
+<p>Hier beginnt das klare Bild „Trainingssatz versus Testsatz“ zu kollabieren.</p>
+<p>Daten haben jetzt Abstammung.</p>
+<pre><code class="language-mermaid">flowchart TD
+    A[Original benchmark] --&gt; B[GitHub mirrors]
+    A --&gt; C[Research papers]
+    A --&gt; D[Tutorials]
+    A --&gt; E[Model evaluations]
+
+    E --&gt; F[Generated explanations]
+    C --&gt; G[HTML / PDF copies]
+    B --&gt; H[Dataset repackaging]
+
+    F --&gt; I[Future training mixtures]
+    G --&gt; I
+    H --&gt; I
+
+    I --&gt; J[New model]
+    J --&gt; A
+</code></pre>
+<p>Bis zur Evaluierung des Modells kann die Frage, ob es „den benchmark gesehen hat“, die Rekonstruktion einer Datenlieferkette erfordern, die niemand vollständig erfasst hat.</p>
+<hr>
+<h2 id="Auswendiglernen-sieht-nicht-immer-wie-Kopieren-aus"><a href="#Auswendiglernen-sieht-nicht-immer-wie-Kopieren-aus" class="headerlink" title="Auswendiglernen sieht nicht immer wie Kopieren aus"></a>Auswendiglernen sieht nicht immer wie Kopieren aus</h2><p>Es gibt noch eine andere Annahme, der ich nicht traue:</p>
+<blockquote>
+<p>If the model memorized the answer, it should reproduce the original text.</p>
+</blockquote>
+<p>Nicht unbedingt.</p>
+<p>Neuronale Netze sind keine Datenbanken mit einer praktischen „SELECT * FROM Memories“-Schnittstelle.</p>
+<p>Eine gespeicherte Assoziation kann Vorhersagen beeinflussen, ohne dass eine wörtliche Reproduktion erfolgt.</p>
+<p>Angenommen, ein Multiple-Choice-Modell sieht Folgendes:</p>
+<pre><code class="language-text">Question X -&gt; option C
+</code></pre>
+<p>oft während des Trainings.</p>
+<p>Zum Zeitpunkt der Auswertung werden die Auswahlmöglichkeiten neu geordnet.</p>
+<p>Wenn das Modell die semantische Antwort gespeichert hat, kann es dennoch erfolgreich sein.</p>
+<p>Wenn es sich oberflächliche Positionsmuster merkt, könnte es scheitern.</p>
+<p>Wenn es sich teilweise an eine bekannte Erklärung erinnert, kann diese Erinnerung eine Antwort einfach viel wahrscheinlicher machen.</p>
+<p>Von außen betrachtet kann dies nicht von einer Argumentation zu unterscheiden sein.</p>
+<p>Das bedeutet, dass sich eine Kontamination nicht nur darauf auswirken kann, ob ein Modell eine Antwort kennt, sondern auch, <strong>wie viel Suche es intern durchführen muss, bevor es sie erreicht</strong>.</p>
+<p>Ein bekanntes Problem könnte Folgendes hervorrufen:</p>
+<ul>
+<li>shorter reasoning traces,</li>
+<li>unusually high confidence,</li>
+<li>lower sensitivity to distracting information,</li>
+<li>faster convergence to the answer.</li>
+</ul>
+<p>Keines dieser Signale beweist das Auswendiglernen.</p>
+<p>Aber zusammen können sie zu nützlichen Beweisen werden.</p>
+<hr>
+<h2 id="Beunruhigen-Sie-die-Frage-und-sehen-Sie-was-uberlebt"><a href="#Beunruhigen-Sie-die-Frage-und-sehen-Sie-was-uberlebt" class="headerlink" title="Beunruhigen Sie die Frage und sehen Sie, was überlebt"></a>Beunruhigen Sie die Frage und sehen Sie, was überlebt</h2><p>Ein Experiment, das mir konzeptionell gefällt, ist einfach:</p>
+<p><strong>Stellen Sie die benchmark-Frage nicht nur einmal. Erstellen Sie nahegelegene Versionen davon.</strong></p>
+<p>Angenommen, das ursprüngliche Problem ist:</p>
+<blockquote>
+<p>Alice has 12 apples. She gives 5 to Bob. How many remain?</p>
+</blockquote>
+<p>Generieren Sie nun Varianten:</p>
+<h3 id="Oberflachenstorung"><a href="#Oberflachenstorung" class="headerlink" title="Oberflächenstörung"></a>Oberflächenstörung</h3><blockquote>
+<p>Alice owns twelve apples and gives Bob five. How many does she have left?</p>
+</blockquote>
+<p>Die Semantik ist identisch.</p>
+<h3 id="Numerische-Storung"><a href="#Numerische-Storung" class="headerlink" title="Numerische Störung"></a>Numerische Störung</h3><blockquote>
+<p>Alice has 17 apples. She gives 8 to Bob.</p>
+</blockquote>
+<p>Gleiche Struktur, andere Antwort.</p>
+<h3 id="Entitatsstorung"><a href="#Entitatsstorung" class="headerlink" title="Entitätsstörung"></a>Entitätsstörung</h3><blockquote>
+<p>A warehouse contains 12 packages and ships 5.</p>
+</blockquote>
+<p>Gleicher zugrunde liegender Vorgang.</p>
+<h3 id="Strukturelle-Storung"><a href="#Strukturelle-Storung" class="headerlink" title="Strukturelle Störung"></a>Strukturelle Störung</h3><blockquote>
+<p>Alice has 12 apples. Bob gives her 5 more.</p>
+</blockquote>
+<p>Jetzt ändert sich die erforderliche Operation.</p>
+<p>Eine wirklich robuste Fähigkeit sollte viele semantikerhaltende Änderungen überstehen und korrekt reagieren, wenn sich die Semantik ändert.</p>
+<p>Eine auswendig gelernte Assoziation kann viel spröder sein.</p>
+<p>Sie können sich die Bewertung weniger so vorstellen, dass Sie eine Frage stellen, sondern eher die Umgebung messen:</p>
+<p>[<br>f(x), f(x + \delta_1), f(x + \delta_2), \dots<br>]</p>
+<p>wobei jedes (\delta) eine kontrollierte Eigenschaft ändert.</p>
+<p>Die interessante Messung ist nicht nur:</p>
+<pre><code class="language-text">Did the model get x right?
+</code></pre>
+<p>Aber:</p>
+<pre><code class="language-text">Does its behavior remain consistent under transformations
+that should preserve the answer?
+
+Does it change when transformations should change the answer?
+</code></pre>
+<p>Dadurch wird die Kontamination nicht gelöst.</p>
+<p>Aber es liefert uns viel mehr Informationen als ein einzelner Genauigkeitspunkt.</p>
+<hr>
+<h2 id="Der-benchmark-kann-kontaminiert-sein-auch-wenn-die-genauen-Antworten-dies-nicht-sind"><a href="#Der-benchmark-kann-kontaminiert-sein-auch-wenn-die-genauen-Antworten-dies-nicht-sind" class="headerlink" title="Der benchmark kann kontaminiert sein, auch wenn die genauen Antworten dies nicht sind"></a>Der benchmark kann kontaminiert sein, auch wenn die genauen Antworten dies nicht sind</h2><p>Es gibt einen subtileren Fehlermodus, den ich interessanter finde.</p>
+<p>Stellen Sie sich einen benchmark vor, der auf einem bestimmten Argumentationsformat basiert.</p>
+<p>Jedes Beispiel enthält eine ungewöhnliche Struktur:</p>
+<pre><code class="language-text">object → relation → transformation → final category
+</code></pre>
+<p>Möglicherweise wurden die genauen benchmark-Fragen nie in die Schulung aufgenommen.</p>
+<p>Aber Tausende von Lösungen, generierten Beispielen, fine-tuning-Beispielen und benchmark-inspirierten Aufgaben haben es geschafft.</p>
+<p>Das Modell kann daher für die Verteilung dieses benchmark extrem optimiert werden.</p>
+<p>Ist das eine Kontamination?</p>
+<p>Streng genommen vielleicht nicht.</p>
+<p>Aber es bedeutet, dass die Leistung uns möglicherweise mehr über die <strong>Vertrautheit mit der Verteilung</strong> verrät als über die Fähigkeit zum umfassenden Denken.</p>
+<p>Dies ist wichtig, da Benchmarks oft indirekt zu Trainingszielen werden.</p>
+<p>Sobald eine Bestenliste wichtig ist, folgt Optimierungsdruck.</p>
+<p>Forscher untersuchen Fehler.</p>
+<p>Eingabeaufforderungen sind abgestimmt.</p>
+<p>Trainingsmischungen werden angepasst.</p>
+<p>Für schwache Kategorien werden synthetische Daten generiert.</p>
+<p>Modelle werden basierend auf der Leistung von benchmark ausgewählt.</p>
+<p>Auch ohne direkte Schulung der Testantworten passt sich der Entwicklungsprozess schrittweise an die Bewertung an.</p>
+<p>Softwareentwickler kennen bereits eine Version dieses Problems.</p>
+<p>Wenn ich eine Implementierung wiederholt ändere, bis sie eine festgelegte Testsuite besteht, sind diese Tests irgendwann keine völlig unabhängige Qualitätsmessung mehr.</p>
+<p>Der Code könnte sich verbessern.</p>
+<p>Aber auch die Testsuite prägt den Code.</p>
+<p>Benchmarks verhalten sich ähnlich.</p>
+<hr>
+<h2 id="Geheime-Testsatze-helfen-aber-sie-fuhren-zu-einem-weiteren-Kompromiss"><a href="#Geheime-Testsatze-helfen-aber-sie-fuhren-zu-einem-weiteren-Kompromiss" class="headerlink" title="Geheime Testsätze helfen, aber sie führen zu einem weiteren Kompromiss"></a>Geheime Testsätze helfen, aber sie führen zu einem weiteren Kompromiss</h2><p>Die offensichtliche Lösung besteht darin, die Bewertungsdaten privat zu halten.</p>
+<p>Das ist attraktiv.</p>
+<p>Wenn benchmark-Fragen nach dem Modelltraining generiert oder in einem versteckten Testsatz gespeichert werden, ist eine direkte Kontamination viel unwahrscheinlicher.</p>
+<p>Für eine ernsthafte Bewertung würde ich diesem weit mehr als einem Jahrzehnt alten Datensatz vertrauen, der im Internet gespiegelt ist.</p>
+<p>Aber private Benchmarks verursachen Kosten.</p>
+<table>
+<thead>
+<tr>
+<th>Approach</th>
+<th align="right">Contamination resistance</th>
+<th align="right">Reproducibility</th>
+<th align="right">Transparency</th>
+<th align="right">Maintenance</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Fully public static benchmark</td>
+<td align="right">Low</td>
+<td align="right">Excellent</td>
+<td align="right">Excellent</td>
+<td align="right">Low</td>
+</tr>
+<tr>
+<td>Public train, hidden test</td>
+<td align="right">Medium–High</td>
+<td align="right">Good</td>
+<td align="right">Medium</td>
+<td align="right">Medium</td>
+</tr>
+<tr>
+<td>Continuously refreshed private tests</td>
+<td align="right">High</td>
+<td align="right">Lower</td>
+<td align="right">Lower</td>
+<td align="right">High</td>
+</tr>
+<tr>
+<td>Procedurally generated tasks</td>
+<td align="right">Potentially high</td>
+<td align="right">Good</td>
+<td align="right">Medium</td>
+<td align="right">High</td>
+</tr>
+<tr>
+<td>Human-created post-training evaluation</td>
+<td align="right">High</td>
+<td align="right">Variable</td>
+<td align="right">Medium</td>
+<td align="right">Very high</td>
+</tr>
+</tbody></table>
+<p>Ein privater benchmark ist schwieriger zu überprüfen.</p>
+<p>Forscher können nicht einfach überprüfen, ob Fragen mehrdeutig sind.</p>
+<p>Das Debuggen unerwarteter Fehler wird schwieriger.</p>
+<p>Die externe Reproduzierbarkeit nimmt ab.</p>
+<p>Und schließlich können auch private Fragen durchsickern.</p>
+<p>Die Lösung kann daher nicht einfach darin bestehen, „alles geheim zu halten“.</p>
+<hr>
+<h2 id="Eine-dynamische-Bewertung-ist-viel-schwieriger-zu-merken"><a href="#Eine-dynamische-Bewertung-ist-viel-schwieriger-zu-merken" class="headerlink" title="Eine dynamische Bewertung ist viel schwieriger zu merken"></a>Eine dynamische Bewertung ist viel schwieriger zu merken</h2><p>Eine vielversprechendere Richtung ist die Bewertung von <strong>Fähigkeiten, die viele mögliche Testinstanzen generieren</strong>, statt einer festen Sammlung bekannter Fragen.</p>
+<p>Anstatt zu speichern:</p>
+<pre><code class="language-text">Question 1
+Question 2
+Question 3
+...
+Question 5000
+</code></pre>
+<p>Definieren Sie einen Aufgabengenerator:</p>
+<pre><code class="language-python">def generate_problem(rng):
+    entities = sample_entities(rng)
+    constraints = sample_constraints(rng)
+    target = sample_target(rng)
+
+    return build_problem(
+        entities=entities,
+        constraints=constraints,
+        target=target,
+    )
+</code></pre>
+<p>Jetzt trifft das Modell während der Auswertung auf eine neue Instanz.</p>
+<p>Beispielsweise könnte eine Planung benchmark zufällig Folgendes generieren:</p>
+<ul>
+<li>available tools,</li>
+<li>dependencies,</li>
+<li>object states,</li>
+<li>constraints,</li>
+<li>distractors,</li>
+<li>success conditions.</li>
+</ul>
+<p>Dies macht das Auswendiglernen nicht irrelevant. Das Modell kann weiterhin die zugrunde liegende Aufgabenfamilie lernen.</p>
+<p>Aber genau das wollen wir messen.</p>
+<p>Die Bewertung verschiebt sich von:</p>
+<blockquote>
+<p>Do you remember these 500 tasks?</p>
+</blockquote>
+<p>zu:</p>
+<blockquote>
+<p>Can you solve new tasks sampled from this capability distribution?</p>
+</blockquote>
+<p>Es gibt einen technischen Haken.</p>
+<p>Es ist schwierig, gültige Aufgaben zu generieren.</p>
+<p>Wenn der Generator versehentlich unmögliche oder mehrdeutige Fälle erzeugt, messen wir Generatorfehler anstelle der Modellfähigkeit.</p>
+<p>Bei Agenten-Benchmarks wird es noch schwieriger, da die Umgebung selbst konsistent bleiben muss.</p>
+<p>Bei der dynamischen Bewertung wird also das Kontaminationsrisiko gegen die Komplexität der Infrastruktur ausgetauscht.</p>
+<p>Das ist normalerweise ein Handel, zu dem ich bereit bin.</p>
+<hr>
+<h2 id="Agenten-machen-das-Problem-etwas-einfacher-–-und-viel-schwieriger"><a href="#Agenten-machen-das-Problem-etwas-einfacher-–-und-viel-schwieriger" class="headerlink" title="Agenten machen das Problem etwas einfacher – und viel schwieriger"></a>Agenten machen das Problem etwas einfacher – und viel schwieriger</h2><p>Werkzeuggebrauchende Agenten führen zu einer interessanten Wendung.</p>
+<p>Ein Text benchmark endet oft mit einer Antwort:</p>
+<pre><code class="language-text">model → &quot;42&quot;
+</code></pre>
+<p>Ein Agent erstellt eine Flugbahn:</p>
+<pre><code class="language-text">observe
+  ↓
+reason
+  ↓
+select tool
+  ↓
+construct arguments
+  ↓
+observe result
+  ↓
+update state
+  ↓
+select next action
+</code></pre>
+<p>Selbst wenn ein Agent schon einmal eine ähnliche Aufgabe gesehen hat, reicht es oft nicht aus, sich die endgültige Antwort zu merken.</p>
+<p>Es muss immer noch korrekt mit der aktuellen Umgebung interagieren.</p>
+<p>Das gibt uns zusätzliche Bewertungssignale:</p>
+<ul>
+<li>Was the correct tool selected?</li>
+<li>Were the arguments valid?</li>
+<li>Did the agent inspect necessary state?</li>
+<li>Did it recover after a failed action?</li>
+<li>Did it respect constraints?</li>
+<li>Did it reach success through a sensible trajectory?</li>
+</ul>
+<p>Aber Agenten erzeugen eine neue Form der benchmark-Überanpassung.</p>
+<p>Ein Modell kann benchmark-spezifische Werkzeugnamen und Workflow-Konventionen lernen:</p>
+<pre><code class="language-text">search_database()
+book_item()
+submit_answer()
+</code></pre>
+<p>und sehen in dieser Umgebung hervorragend aus.</p>
+<p>Benennen Sie die Tools um, ändern Sie das Schema, ordnen Sie Beobachtungen neu oder führen Sie einen unbekannten Zwischenzustand ein, und die Leistung kann stark sinken.</p>
+<p>Für Agenten würde ich also nicht nur die Aufgabe variieren.</p>
+<p>Ich würde auch Teile der Benutzeroberfläche variieren.</p>
+<p>Eine gute Agentenbewertung sollte testen, ob das System Folgendes gelernt hat:</p>
+<pre><code class="language-text">&quot;when I need information, retrieve it&quot;
+</code></pre>
+<p>statt:</p>
+<pre><code class="language-text">&quot;benchmark tasks usually begin with calling tool_3&quot;
+</code></pre>
+<hr>
+<h2 id="Konnen-wir-Kontaminationen-allein-anhand-des-Modells-erkennen"><a href="#Konnen-wir-Kontaminationen-allein-anhand-des-Modells-erkennen" class="headerlink" title="Können wir Kontaminationen allein anhand des Modells erkennen?"></a>Können wir Kontaminationen allein anhand des Modells erkennen?</h2><p>Manchmal fehlt uns der Schulungskorpus.</p>
+<p>Dies ist bei geschlossenen Modellen häufig der Fall, und selbst offene Modelle liefern möglicherweise keinen vollständig nachverfolgbaren Datensatz.</p>
+<p>Dann wird die Frage schwieriger:</p>
+<p><strong>Kann das Modellverhalten Aufschluss darüber geben, ob ein Beispiel auswendig gelernt wurde?</strong></p>
+<p>Es gibt mehrere mögliche Signale.</p>
+<h3 id="Fragen-Sie-nach-ungewohnlichen-Fortsetzungen"><a href="#Fragen-Sie-nach-ungewohnlichen-Fortsetzungen" class="headerlink" title="Fragen Sie nach ungewöhnlichen Fortsetzungen"></a>Fragen Sie nach ungewöhnlichen Fortsetzungen</h3><p>Wenn online eine benchmark-Frage mit einer eindeutigen Erklärung vorhanden ist, fordern Sie das Modell mit dem Anfang auf und prüfen Sie, ob es seltene Formulierungen wiedergibt.</p>
+<p>Eine starke Fortsetzungsähnlichkeit kann verdächtig sein.</p>
+<p>Aber das Fehlen einer Reproduktion beweist fast nichts.</p>
+<h3 id="Messen-Sie-die-Empfindlichkeit-gegenuber-Storungen"><a href="#Messen-Sie-die-Empfindlichkeit-gegenuber-Storungen" class="headerlink" title="Messen Sie die Empfindlichkeit gegenüber Störungen"></a>Messen Sie die Empfindlichkeit gegenüber Störungen</h3><p>Behalten Sie die Argumentationsstruktur bei, während Sie Werte, Namen, Reihenfolge oder irrelevante Details ändern.</p>
+<p>Ein starker Abfall kann darauf hindeuten, dass man sich auf die Vertrautheit mit der Oberfläche verlässt.</p>
+<p>Es könnte aber auch eine echte Robustheitsschwäche aufdecken.</p>
+<h3 id="Vergleichen-Sie-bekannte-und-neu-generierte-Aufgaben"><a href="#Vergleichen-Sie-bekannte-und-neu-generierte-Aufgaben" class="headerlink" title="Vergleichen Sie bekannte und neu generierte Aufgaben"></a>Vergleichen Sie bekannte und neu generierte Aufgaben</h3><p>Erstellen Sie neue Beispiele, um dieselbe Fähigkeit zu testen.</p>
+<p>Wenn die Leistung ist:</p>
+<pre><code class="language-text">public benchmark:       94%
+fresh matched problems: 67%
+</code></pre>
+<p>Ich würde nachforschen.</p>
+<p>Die Lücke ist aussagekräftiger als jede Zahl allein.</p>
+<h3 id="Untersuchen-Sie-das-Selbstvertrauen"><a href="#Untersuchen-Sie-das-Selbstvertrauen" class="headerlink" title="Untersuchen Sie das Selbstvertrauen"></a>Untersuchen Sie das Selbstvertrauen</h3><p>Auswendig gelernte Elemente können zu ungewöhnlich sicheren Vorhersagen führen.</p>
+<p>Leider ist das Vertrauen in moderne Sprachmodelle so schlecht kalibriert, dass ich dies nur als unterstützenden Beweis betrachten würde.</p>
+<p>Keine dieser Methoden ergibt einen magischen Kontaminationsdetektor.</p>
+<p>Sie geben uns etwas Realistischeres: <strong>eine Sammlung von Tests, die die Memorisierungshypothese mehr oder weniger plausibel machen können.</strong></p>
+<hr>
+<h2 id="Ich-wurde-aufhoren-eine-benchmark-Nummer-zu-melden"><a href="#Ich-wurde-aufhoren-eine-benchmark-Nummer-zu-melden" class="headerlink" title="Ich würde aufhören, eine benchmark-Nummer zu melden"></a>Ich würde aufhören, eine benchmark-Nummer zu melden</h2><p>Wenn ich ein wichtiges Modell bewerten würde, möchte ich nicht, dass das Hauptergebnis so aussieht:</p>
+<pre><code class="language-text">Benchmark X: 91.7%
+</code></pre>
+<p>Diese Zahl ist kompakt.</p>
+<p>Es bringt auch viel zu viel Verantwortung mit sich.</p>
+<p>Ich würde lieber eine kleine Bewertungsmatrix erstellen.</p>
+<table>
+<thead>
+<tr>
+<th>Evaluation</th>
+<th>Question it answers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Original public benchmark</td>
+<td>Can the model solve the standard test?</td>
+</tr>
+<tr>
+<td>Paraphrased items</td>
+<td>Is performance robust to surface wording?</td>
+</tr>
+<tr>
+<td>Counterfactual variants</td>
+<td>Does the answer track changed facts?</td>
+</tr>
+<tr>
+<td>Fresh matched examples</td>
+<td>Does performance transfer to unseen instances?</td>
+</tr>
+<tr>
+<td>Harder compositional variants</td>
+<td>Does the learned capability scale?</td>
+</tr>
+<tr>
+<td>Procedurally generated tasks</td>
+<td>Can the model generalize within the task family?</td>
+</tr>
+<tr>
+<td>Out-of-distribution variants</td>
+<td>How brittle is the learned strategy?</td>
+</tr>
+</tbody></table>
+<p>Die interessante Größe wird zur <strong>Form der Leistung unter allen Bedingungen</strong>.</p>
+<p>Betrachten Sie zwei hypothetische Modelle:</p>
+<pre><code class="language-text">                 Public    Paraphrase    Fresh    OOD
+Model A            95%         93%        91%     78%
+Model B            97%         84%        69%     51%
+</code></pre>
+<p>Wenn ich nur die erste Kolumne veröffentlichen würde, würde Modell B gewinnen.</p>
+<p>Wenn ich ein System wollte, das ungewohnten Eingaben standhalten muss, würde ich wahrscheinlich Modell A wählen.</p>
+<p>Genau aus diesem Grund ist Kontamination nicht nur ein Problem der Datensatzhygiene.</p>
+<p>Es handelt sich um ein Bewertungsdesignproblem.</p>
+<hr>
+<h2 id="Worauf-ich-eigentlich-vertrauen-wurde"><a href="#Worauf-ich-eigentlich-vertrauen-wurde" class="headerlink" title="Worauf ich eigentlich vertrauen würde"></a>Worauf ich eigentlich vertrauen würde</h2><p>Ich glaube nicht, dass die richtige Antwort darin besteht, jedes öffentliche benchmark für nutzlos zu erklären.</p>
+<p>Stabile öffentliche Benchmarks sind immer noch wertvoll.</p>
+<p>Sie ermöglichen systemübergreifende Vergleiche.</p>
+<p>Sie offenbaren Rückschritte.</p>
+<p>Sie machen Forschung reproduzierbar.</p>
+<p>Sie geben uns gemeinsame Bezugspunkte.</p>
+<p>Ich würde einfach ändern, wie viele Beweise ich benötige, bevor ich eine überzeugende Fähigkeitsbehauptung vorstelle.</p>
+<p>Für etwas, dessen Bereitstellung mir wirklich am Herzen lag, würde meine Bewertung drei Ebenen kombinieren.</p>
+<p>Erstens würde ich den Standard benchmark beibehalten, weil die Vergleichbarkeit nützlich ist.</p>
+<p>Zweitens würde ich kontrollierte Transformationen des benchmark erstellen: Paraphrasen, geänderte Werte, neu angeordnete Optionen, geänderte Entitäten, geänderte Werkzeugschemata oder andere für die Aufgabe geeignete Störungen.</p>
+<p>Drittens würde ich neue Bewertungsdaten erstellen, nachdem das Modell und die Eingabeaufforderungskonfiguration korrigiert wurden.</p>
+<p>Der letzte Schritt ist wichtig.</p>
+<p>Wenn ich einen versteckten Testsatz erzeuge, das Modell auswerte, alle Fehler inspiziere, das System ändere und diesen Vorgang fünfzig Mal wiederhole, ist mein versteckter Satz stillschweigend zu Entwicklungsdaten geworden.</p>
+<p>Also würde ich trennen:</p>
+<pre><code class="language-text">development evaluation
+        │
+        ▼
+model / prompt decisions frozen
+        │
+        ▼
+fresh final evaluation
+</code></pre>
+<p>Es ist nicht glamourös.</p>
+<p>Es handelt sich im Grunde um experimentelle Hygiene.</p>
+<p>Aber ein überraschend großer Teil der Modellbewertung wird klarer, wenn man Benchmarks weniger als unveränderliche Maßstäbe für Intelligenz, sondern eher als Softwaretests betrachtet, die durchgesickert, übermäßig angepasst, manipuliert und versehentlich optimiert werden können.</p>
+<hr>
+<h2 id="Vielleicht-„Begrundung-oder-Auswendiglernen“-ist-die-falsche-Frage"><a href="#Vielleicht-„Begrundung-oder-Auswendiglernen“-ist-die-falsche-Frage" class="headerlink" title="Vielleicht „Begründung oder Auswendiglernen“? ist die falsche Frage"></a>Vielleicht „Begründung oder Auswendiglernen“? ist die falsche Frage</h2><p>Je mehr ich über Kontamination nachdenke, desto weniger nützlich wird die binäre Frage.</p>
+<p>Neuronale Modelle lernen aus Beispielen.</p>
+<p>Natürlich wirkt sich eine frühere Exposition auf zukünftige Überlegungen aus.</p>
+<p>Menschen arbeiten auf die gleiche Weise: Es ist einfacher, ein bekanntes Problem zu lösen, als eine Strategie von Grund auf neu zu erfinden.</p>
+<p>Die wichtige Frage ist nicht, ob das Modell aus ähnlichen Beispielen gelernt hat.</p>
+<p>Es sollte.</p>
+<p>Die Frage ist, wie weit seine Fähigkeiten über sie hinausgehen.</p>
+<p>Funktioniert es immer noch, wenn ich die Namen ändere?</p>
+<p>Wenn ich die Zahlen ändere?</p>
+<p>Wenn ich eine Beziehung umkehre?</p>
+<p>Wenn ich das Tool API ersetze?</p>
+<p>Wenn ich morgen eine neue Instanz erstelle, die im Trainingskorpus möglicherweise nicht vorhanden gewesen wäre?</p>
+<p>Wenn die Antwort über diese Änderungen hinweg korrekt bleibt, fällt es mir viel leichter, die Verhaltensverallgemeinerung zu nennen.</p>
+<p>Eine benchmark sollte daher nicht als Abschlussprüfung mit einer Punktzahl behandelt werden.</p>
+<p>Ich stelle es mir lieber als Sonde vor.</p>
+<p>Bewegen Sie die Sonde herum.</p>
+<p>Ändern Sie die Oberflächenform.</p>
+<p>Ändern Sie den zugrunde liegenden Status.</p>
+<p>Generieren Sie neue Instanzen.</p>
+<p>Schieben Sie etwas außerhalb der bekannten Verteilung.</p>
+<p>Beobachten Sie dann, wo die Kompetenz des Modells erhalten bleibt.</p>
+<p>Denn der stärkste Beweis dafür, dass ein Modell argumentieren kann, ist nicht, dass es die Antwort auf eine Frage kennt, die wir Modellen seit Jahren stellen.</p>
+<p>Wenn wir die Frage genau so ändern, dass das Auswendiglernen nicht überleben sollte, tut dies die Fähigkeit.</p>
+<hr>
+<h2 id="Homepage-Auszug"><a href="#Homepage-Auszug" class="headerlink" title="Homepage-Auszug"></a>Homepage-Auszug</h2><p>Ein Model erhält eine außergewöhnliche benchmark-Bewertung. Großartig – aber hat es die Probleme gelöst, vertraute Vorlagen erkannt oder sich an den Test erinnert? Der interessante Teil der Bewertung beginnt, wenn eine Zahl nicht mehr ausreicht.</p>
+<h2 id="Schlagworte"><a href="#Schlagworte" class="headerlink" title="Schlagworte"></a>Schlagworte</h2><p>„LLM Evaluation“ · „Benchmark-Kontamination“ · „Auswendiglernen“ · „Generalisierung“ · „KI-Robustheit“ · „Sprachmodelle“ · „Agentenbewertung“.</p>
+
+	</div>
+
+	<div class="page-template-comments">
+		
+	</div>
+</div>
+
+<div class="paginator">
+	
+</div>
+  
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Zhaokun Wang</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span data-i18n="site_posts" data-i18n-arg="17">
+                        Insgesamt 17 Beiträge
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">BESUCHERZAHL</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">GESAMTSEITENAUFRUFE</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">ANGETRIEBEN VON <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+            <div>
+                <span data-i18n="runtime">Blog online seit</span> <span class="odometer" id="runtime_days" ></span> <span data-i18n="days">Tagen</span> <span class="odometer" id="runtime_hours"></span> <span data-i18n="hours">Std</span> <span class="odometer" id="runtime_minutes"></span> <span data-i18n="minutes">Min</span> <span class="odometer" id="runtime_seconds"></span> <span data-i18n="seconds">Sek</span>
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-translate-de flex justify-center items-center" title="翻译为德语">
+			<span class="translate-lang-label">DE</span>
+		</li>
+
+		<li class="right-bottom-tools tool-translate-zh flex justify-center items-center" title="翻译为中文">
+			<span class="translate-lang-label">文</span>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	<script src="/js/ui-language-switcher.js" defer></script>
+	<script src="/js/immersive-translate.js" defer></script>
+	
+</body>
+
+</html>

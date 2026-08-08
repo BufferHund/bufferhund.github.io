@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Full Stack,Web Development,Machine Learning,NLP,LLM,Technology">
+    
+    <meta name="author" content="Zhaokun Wang">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://bufferhund.github.io/de/2025/01/18/rag-works-great-until-your-documents-disagree/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="RAG funktioniert – bis sich die Quellen widersprechen">
+<meta property="og:url" content="https://bufferhund.github.io/de/2025/01/18/rag-works-great-until-your-documents-disagree/index.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Blog 2025">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="de_DE">
+<meta property="og:image" content="https://bufferhund.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2025-01-18T08:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-08T18:06:12.994Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="Evaluation">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="Quantization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bufferhund.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            RAG funktioniert – bis sich die Quellen widersprechen | Zhaokun&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"bufferhund.github.io","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Zhaokun's Blog","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/BufferHund","instagram":null,"zhihu":null,"linkedin":"https://www.linkedin.com/in/zhaokun-wang-8802452a9","mail":null,"email":"mailto:wang@cl.uni-heidelberg.de"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Research":{"path":"/research","icon":"fa-regular fa-brain"},"Projects":{"path":"/projects","icon":"fa-regular fa-project-diagram"},"Talks":{"path":"/talks","icon":"fa-regular fa-comments"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"path":"/about","icon":"fa-regular fa-user"}},"search":{"enable":false,"preload":false},"langs":{"enable":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    <script id="hexo-i18n-dicts" type="application/json">
+{"en":{"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","research":"Research","projects":"Projects","talks":"Talks","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."},"de":{"search":"Suchen...","toc":"Auf dieser Seite","prev":"Zurück","next":"Weiter","prev_posts":"Vorherige Beiträge","next_posts":"Nächste Beiträge","page":"Seite %d","recent_posts":"Neueste Beiträge","share":"Teilen","powered_by":"ANGETRIEBEN VON %s","theme":"THEME","rss_feed":"RSS-Feed","category":"Kategorie","categories":"Kategorien","tag":"Schlagwort","tags":"Schlagwörter","post":"Beitrag","posts":"Beiträge","tagcloud":"Schlagwörter-Wolke","comment":"Kommentar","comments":"Kommentare","home":"Start","research":"Forschung","projects":"Projekte","talks":"Vorträge","archive":"Archiv","archives":"Archive","top":"NACH OBEN","sticky":"Angeheftet","go-back-home":"Zurück zur Startseite","about":"Über","changelog":"Änderungsprotokoll","links":"Links","link":"Link","friends":"Freunde","friend":"Freund","timeline":"Zeitleiste","shuoshuo":"Shuoshuo","site_uv":"BESUCHERZAHL","site_pv":"GESAMTSEITENAUFRUFE","read_more":"Weiterlesen","wordcount":"Wörter","min2read":"Min","status":"Status","runtime":"Blog online seit","days":"Tagen","hours":"Std","minutes":"Min","seconds":"Sek","optimized_by":"und optimiert von Evan","rights":"Alle Rechte vorbehalten","site_posts":"Insgesamt %s Beiträge","site_wordcount":"Insgesamt %s Wörter","copyright":{"author":"Autor","title":"Titel","link":"Link","create_time":"Erstellt am","update_time":"Aktualisiert am","license_title":"Lizenz","license_content":"Dieses Werk ist lizenziert unter %s.","all_rights_reserved":"Alle Rechte vorbehalten &#169; %s","public_domain":"Dieses Werk ist gemeinfrei."},"ago":{"second":"vor %s Sekunden","minute":"vor %s Minuten","hour":"vor %s Stunden","day":"vor %s Tagen","week":"vor %s Wochen","month":"vor %s Monaten","year":"vor %s Jahren"},"create_time":"Erstellt","update_time":"Aktualisiert","expired":"Dieser Beitrag wurde vor %s Tagen verfasst, der Inhalt ist möglicherweise nicht mehr aktuell."},"zh-CN":{"search":"站内搜索您需要的内容...","toc":"目录","prev":"上一页","next":"下一页","prev_posts":"上一篇","next_posts":"下一篇","page":"第 %d 页","recent_posts":"最新文章","share":"分享","powered_by":"由 %s 驱动","theme":"主题","rss_feed":"RSS Feed","category":"分类","categories":"分类","tag":"标签","tags":"标签","post":"文章","posts":"文章","tagcloud":"标签云","comment":"评论","comments":"评论","top":"置顶","sticky":"置顶","go-back-home":"回到首页","home":"首页","research":"研究","projects":"项目","talks":"学术报告","archive":"归档","archives":"归档","about":"关于","links":"链接","link":"链接","friends":"友情链接","friend":"友情链接","timeline":"时间轴","shuoshuo":"说说","site_uv":"访问人数","site_pv":"总访问量","read_more":"阅读全文","wordcount":"字","min2read":"分钟","changelog":"更新日志","status":"状态","runtime":"博客已运行","days":"天","hours":"小时","minutes":"分钟","seconds":"秒","optimized_by":"并由 Evan 进行优化","rights":"版权所有","site_posts":"共撰写了 %s 篇文章","site_wordcount":"共 %s 字","copyright":{"title":"标题","author":"作者","link":"链接","create_time":"创建于","update_time":"更新于","license_title":"版权声明","license_content":"本文章采用 %s 进行许可。","all_rights_reserved":"版权所有 &#169 %s，禁止转载。","public_domain":"本文为公有领域作品，可自由转载、引用。"},"ago":{"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"},"create_time":"创建","update_time":"更新","expired":"这篇文章最后更新于 %s 天前，内容可能已经过时。"}}
+</script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+
+    <!-- Language redirect: support ?lang=en|zh-CN|de|zh query params (for sharing links from resumes etc.) -->
+    <script>
+        (function () {
+            var m = /[?&]lang=([^&]+)/.exec(window.location.search);
+            if (!m) return;
+            var l = m[1].toLowerCase();
+            var map = { "en": "en", "zh-cn": "zh-CN", "zh": "zh-CN", "cn": "zh-CN", "chinese": "zh-CN", "de": "de", "deutsch": "de", "german": "de" };
+            var lang = map[l];
+            if (!lang) return;
+            var p = window.location.pathname;
+            if (lang === "en") {
+                p = p.replace(/^\/(zh-CN|zh-cn|de)\//, "/");
+            } else {
+                p = "/" + lang + p.replace(/^\/(zh-CN|zh-cn|de)\//, "/");
+            }
+            if (p !== window.location.pathname) {
+                window.location.replace(p);
+            }
+        })();
+    </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			
+<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/de/">
+                
+                Zhaokun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    <span data-i18n="home">START</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/research"
+                                        >
+                                    <i class="fa-regular fa-brain fa-fw"></i>
+                                    <span data-i18n="research">FORSCHUNG</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/projects"
+                                        >
+                                    <i class="fa-regular fa-project-diagram fa-fw"></i>
+                                    <span data-i18n="projects">PROJEKTE</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/talks"
+                                        >
+                                    <i class="fa-regular fa-comments fa-fw"></i>
+                                    <span data-i18n="talks">VORTRÄGE</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    <span data-i18n="archives">ARCHIVE</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/de/about"
+                                        >
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    <span data-i18n="about">ÜBER</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                    
+                        <li class="navbar-item navbar-lang-switch navbar-lang-dropdown-container" title="Site language">
+                            <i class="fa-solid fa-globe"></i>
+                            <ul class="navbar-lang-dropdown">
+                                <li><a href="#" data-lang="en">English</a></li>
+                                <li><a href="#" data-lang="zh-CN">简体中文</a></li>
+                                <li><a href="#" data-lang="de">Deutsch</a></li>
+                            </ul>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/"
+                        >
+                            <span data-i18n="home">
+                                START
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/research"
+                        >
+                            <span data-i18n="research">
+                                FORSCHUNG
+                            </span>
+                            
+                                <i class="fa-regular fa-brain fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/projects"
+                        >
+                            <span data-i18n="projects">
+                                PROJEKTE
+                            </span>
+                            
+                                <i class="fa-regular fa-project-diagram fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/talks"
+                        >
+                            <span data-i18n="talks">
+                                VORTRÄGE
+                            </span>
+                            
+                                <i class="fa-regular fa-comments fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/archives"
+                        >
+                            <span data-i18n="archives">
+                                ARCHIVE
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/de/about"
+                        >
+                            <span data-i18n="about">
+                                ÜBER
+                            </span>
+                            
+                                <i class="fa-regular fa-user fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">45</div>
+        <div class="label text-third-text-color text-sm" data-i18n="tags">Schlagwörter</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm" data-i18n="categories">Kategorien</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">17</div>
+        <div class="label text-third-text-color text-sm" data-i18n="posts">Beiträge</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="page-template-container">
+	
+
+	
+
+	<div class="page-template-content markdown-body">
+		
+		<h1>RAG funktioniert – bis sich die Quellen widersprechen</h1>
+		
+
+		<h1 id="RAG-funktioniert-–-bis-sich-die-Quellen-widersprechen"><a href="#RAG-funktioniert-–-bis-sich-die-Quellen-widersprechen" class="headerlink" title="RAG funktioniert – bis sich die Quellen widersprechen"></a>RAG funktioniert – bis sich die Quellen widersprechen</h1><p><strong>Die passenden Dokumente zu finden, ist nur die halbe Arbeit. Schwierig wird es, wenn mehrere passende Quellen unterschiedliche Antworten nahelegen.</strong></p>
+<p>Ich habe einem RAG-System einmal eine Frage gestellt, bei der das Retrieval eigentlich kaum einfacher hätte sein können.</p>
+<p>In der Wissensbasis lagen zwei Dokumente zur selben internen API.</p>
+<p>Im ersten stand:</p>
+<blockquote>
+<p>Requests sind auf 100 pro Minute begrenzt.</p>
+</blockquote>
+<p>Im zweiten:</p>
+<blockquote>
+<p>Requests sind auf 500 pro Minute begrenzt.</p>
+</blockquote>
+<p>Beide Dokumente waren relevant. Beide landeten weit oben im Ranking. Beide wurden zuverlässig gefunden.</p>
+<p>Das Modell antwortete:</p>
+<blockquote>
+<p>Die API unterstützt bis zu 500 Requests pro Minute.</p>
+</blockquote>
+<p>Auf den ersten Blick sah alles richtig aus. Die Antwort war präzise formuliert und ließ sich direkt auf eines der gefundenen Dokumente zurückführen.</p>
+<p>Trotzdem war sie falsch.</p>
+<p>Die Grenze von 500 Requests stammte aus einer alten Migrationsnotiz. In der aktuellen Spezifikation galt längst ein Limit von 100.</p>
+<p>Im klassischen RAG-Stack war dabei eigentlich nichts kaputt. Die Embeddings funktionierten. Das Retrieval funktionierte. Der Kontext passte problemlos ins Context Window. Selbst die konkrete Zahl war nicht erfunden, sondern stand genau so in einer Quelle.</p>
+<p>Das eigentliche Problem war eine andere Annahme: <strong>Nur weil ein System relevante Dokumente findet, heißt das noch lange nicht, dass seine Antwort wirklich durch die Quellen gedeckt ist.</strong></p>
+<p>Sobald Dokumente veraltet sind, sich widersprechen, wichtige Bedingungen auslassen oder mehrere Lesarten zulassen, reicht gutes Retrieval nicht mehr aus.</p>
+<p>Dann geht es nicht mehr nur darum, <em>welche</em> Dokumente gefunden wurden.</p>
+<p>Sondern darum, <em>wie das System mit ihnen umgeht</em>.</p>
+<hr>
+<h2 id="Das-ubliche-RAG-Bild-ist-ein-bisschen-zu-ordentlich"><a href="#Das-ubliche-RAG-Bild-ist-ein-bisschen-zu-ordentlich" class="headerlink" title="Das übliche RAG-Bild ist ein bisschen zu ordentlich"></a>Das übliche RAG-Bild ist ein bisschen zu ordentlich</h2><p>Ein vereinfachtes RAG-System wird oft ungefähr so dargestellt:</p>
+<pre><code class="language-mermaid">flowchart LR
+    Q[User Query] --&gt; R[Retriever]
+    D[(Documents)] --&gt; R
+    R --&gt; C[Relevant Context]
+    C --&gt; L[LLM]
+    Q --&gt; L
+    L --&gt; A[Answer]
+</code></pre>
+<p>Die Idee dahinter ist schnell erklärt:</p>
+<ol>
+<li>Finde Dokumente, die zur Frage passen.</li>
+<li>Gib sie dem Modell.</li>
+<li>Lass das Modell daraus eine Antwort formulieren.</li>
+</ol>
+<p>Damit wirkt Retrieval-Qualität automatisch wie der wichtigste Engpass.</p>
+<p>Ist die Antwort schlecht, hat der Retriever vielleicht die falschen Chunks geliefert. Also bessere Embeddings, ein Reranker, andere Chunk-Größen oder schlicht mehr Treffer.</p>
+<p>All das kann sinnvoll sein.</p>
+<p>Aber nehmen wir an, der Retriever wäre perfekt.</p>
+<p>Er findet jedes Dokument, das auch ein Mensch als relevant einstufen würde.</p>
+<p>Die Antwort kann trotzdem falsch sein.</p>
+<p>Ein realistischeres Bild sieht eher so aus:</p>
+<pre><code class="language-text">query
+  |
+  v
+retrieve candidate sources
+  |
+  +---- aktuelle Spezifikation
+  +---- veraltete Dokumentation
+  +---- unvollständige Troubleshooting-Notiz
+  +---- Kommentar eines Nutzers
+  +---- mehrdeutige Policy-Seite
+  |
+  v
+LLM muss entscheiden:
+  - welche Quelle ist maßgeblich?
+  - welche ist aktueller?
+  - widersprechen sich die Aussagen wirklich?
+  - welche Information fehlt?
+  - ist eine eindeutige Antwort überhaupt gerechtfertigt?
+  |
+  v
+answer
+</code></pre>
+<p>Retrieval entscheidet darüber, <strong>welche Quellen überhaupt auf dem Tisch liegen</strong>.</p>
+<p>Es entscheidet nicht darüber, <strong>welcher davon man im Zweifel folgen sollte</strong>.</p>
+<p>Genau dieser zweite Schritt bleibt oft unsichtbar, weil Sprachmodelle sehr gut darin sind, aus unordentlichem Kontext eine glatte, eindeutige Antwort zu machen.</p>
+<p>Manchmal fast schon zu gut.</p>
+<hr>
+<h2 id="Ein-Widerspruch-ist-nicht-einfach-nur-Rauschen"><a href="#Ein-Widerspruch-ist-nicht-einfach-nur-Rauschen" class="headerlink" title="Ein Widerspruch ist nicht einfach nur Rauschen"></a>Ein Widerspruch ist nicht einfach nur Rauschen</h2><p>Nehmen wir an, eine interne Wissensbasis enthält diese drei Passagen:</p>
+<pre><code class="language-text">Dokument A — Employee Handbook 2025
+Remote Work ist an bis zu drei Tagen pro Woche erlaubt.
+
+Dokument B — HR Policy Update, März 2026
+Mitarbeitende dürfen an bis zu zwei Tagen pro Woche remote arbeiten.
+
+Dokument C — Engineering FAQ
+Die meisten Engineering-Teams arbeiten aktuell drei Tage pro Woche remote.
+</code></pre>
+<p>Die Frage lautet:</p>
+<blockquote>
+<p>An wie vielen Tagen pro Woche dürfen Mitarbeitende remote arbeiten?</p>
+</blockquote>
+<p>Ein Vektor-Retriever kann problemlos alle drei Dokumente finden.</p>
+<p>Aus Retrieval-Sicht ist das ein sehr gutes Ergebnis.</p>
+<p>Für die Antwortgenerierung beginnt das eigentliche Problem aber erst jetzt.</p>
+<p>Dokument B ist offenbar neuer als A. Gilt es auch für alle Teams?</p>
+<p>Dokument C beschreibt eher die Praxis als die offizielle Regel. Ist die FAQ veraltet? Gilt für Engineering eine Ausnahme? Oder wird die neue Policy dort einfach noch nicht umgesetzt?</p>
+<p>Eine vernünftige Antwort könnte lauten:</p>
+<blockquote>
+<p>Laut dem HR-Update vom März 2026 gilt allgemein eine Grenze von zwei Remote-Tagen pro Woche. Die Engineering-FAQ nennt weiterhin drei Tage; sie könnte daher veraltet sein oder eine teamspezifische Ausnahme beschreiben.</p>
+</blockquote>
+<p>Ein typischer RAG-Prompt ist oft viel simpler:</p>
+<blockquote>
+<p>Beantworte die Frage anhand des bereitgestellten Kontexts.</p>
+</blockquote>
+<p>Damit soll das Modell widersprüchliche Quellen zu einer einzigen Antwort verdichten, ohne dass überhaupt festgelegt wurde, wie solche Konflikte aufzulösen sind.</p>
+<p>Vielleicht bevorzugt es die neueste Passage.</p>
+<p>Vielleicht die ausführlichste.</p>
+<p>Vielleicht einfach die letzte im Kontext.</p>
+<p>Oder es bildet implizit eine Art Mehrheitsentscheidung.</p>
+<p>Noch problematischer wird es, wenn das Modell aus den drei Aussagen eine neue, sehr plausible Formulierung baut:</p>
+<blockquote>
+<p>Mitarbeitende arbeiten in der Regel zwei bis drei Tage pro Woche remote.</p>
+</blockquote>
+<p>Das klingt vernünftig.</p>
+<p>Nur hat keine Quelle genau das behauptet.</p>
+<p>Die Zahlen wurden nicht halluziniert. Beide stehen in den Dokumenten.</p>
+<p>Halluziniert wurde vielmehr <strong>der Zusammenhang zwischen den Quellen</strong>.</p>
+<hr>
+<h2 id="Relevanz-und-Verlasslichkeit-sind-nicht-dasselbe"><a href="#Relevanz-und-Verlasslichkeit-sind-nicht-dasselbe" class="headerlink" title="Relevanz und Verlässlichkeit sind nicht dasselbe"></a>Relevanz und Verlässlichkeit sind nicht dasselbe</h2><p>Embedding-basierte Suche optimiert in erster Linie auf semantische Ähnlichkeit.</p>
+<p>Das ist gut für die Frage:</p>
+<blockquote>
+<p>Welche Dokumente haben inhaltlich mit meiner Anfrage zu tun?</p>
+</blockquote>
+<p>Es beantwortet aber nicht automatisch:</p>
+<blockquote>
+<p>Welcher Quelle sollte ich vertrauen?</p>
+</blockquote>
+<p>Das sind zwei unterschiedliche Probleme.</p>
+<p>Nehmen wir eine Suche in technischer Dokumentation:</p>
+<table>
+<thead>
+<tr>
+<th>Quelle</th>
+<th align="right">Relevant?</th>
+<th align="right">Aktuell?</th>
+<th align="right">Verlässlich?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Aktuelle API-Referenz</td>
+<td align="right">Ja</td>
+<td align="right">Ja</td>
+<td align="right">Hoch</td>
+</tr>
+<tr>
+<td>Migrationsleitfaden von 2024</td>
+<td align="right">Ja</td>
+<td align="right">Nein</td>
+<td align="right">Mittel</td>
+</tr>
+<tr>
+<td>GitHub Issue</td>
+<td align="right">Ja</td>
+<td align="right">Vielleicht</td>
+<td align="right">Niedrig</td>
+</tr>
+<tr>
+<td>Internes Design-Dokument</td>
+<td align="right">Ja</td>
+<td align="right">Nein</td>
+<td align="right">Mittel</td>
+</tr>
+<tr>
+<td>Antwort in einem Nutzerforum</td>
+<td align="right">Ja</td>
+<td align="right">Unklar</td>
+<td align="right">Niedrig</td>
+</tr>
+</tbody></table>
+<p>Für ein Embedding-Modell können alle fünf Quellen sehr relevant sein.</p>
+<p>Der veraltete Migrationsleitfaden kann sogar <em>höher</em> ranken als die aktuelle API-Referenz, wenn seine Formulierung besser zur Nutzerfrage passt.</p>
+<p>Daraus ergibt sich eine Trennung, die ich bei RAG-Systemen sehr wichtig finde:</p>
+<pre><code class="language-text">retrieval relevance ≠ source reliability
+</code></pre>
+<p>Ich sehe Retrieval deshalb weniger als Schritt, der bereits „die Antwort findet“, sondern eher als Schritt, der <strong>Kandidaten für die spätere Begründung</strong> liefert.</p>
+<p>Diese Kandidaten müssen anschließend noch eingeordnet werden.</p>
+<p>Plötzlich werden Metadaten wichtig, die im ersten Prototyp oft wie Nebensache aussehen: Zeitstempel, Dokumenttyp, Versionsnummer, Status, zuständiges Team oder Gültigkeitsbereich.</p>
+<p>Ein Chunk wie:</p>
+<pre><code class="language-json">{
+  &quot;text&quot;: &quot;The maximum upload size is 50 MB.&quot;,
+  &quot;source&quot;: &quot;api_reference.md&quot;
+}
+</code></pre>
+<p>liefert weniger Kontext als:</p>
+<pre><code class="language-json">{
+  &quot;text&quot;: &quot;The maximum upload size is 50 MB.&quot;,
+  &quot;source&quot;: &quot;api_reference.md&quot;,
+  &quot;version&quot;: &quot;v4.2&quot;,
+  &quot;effective_date&quot;: &quot;2026-05-01&quot;,
+  &quot;status&quot;: &quot;current&quot;,
+  &quot;authority&quot;: &quot;official&quot;
+}
+</code></pre>
+<p>Für das Embedding machen diese Felder vielleicht kaum einen Unterschied.</p>
+<p>Für die spätere Entscheidung, welcher Aussage zu folgen ist, schon.</p>
+<hr>
+<h2 id="Veraltete-Dokumente-sind-besonders-tuckisch"><a href="#Veraltete-Dokumente-sind-besonders-tuckisch" class="headerlink" title="Veraltete Dokumente sind besonders tückisch"></a>Veraltete Dokumente sind besonders tückisch</h2><p>Alte Informationen sind unangenehm, weil sie gleichzeitig perfekt relevant und trotzdem falsch sein können.</p>
+<p>Stellen wir uns einen Support-Assistenten mit folgender Frage vor:</p>
+<blockquote>
+<p>Welche Authentifizierungsmethoden unterstützt der Dienst?</p>
+</blockquote>
+<p>Der Retriever findet:</p>
+<pre><code class="language-text">Dokumentation 2025:
+Der Dienst unterstützt Passwort-Authentifizierung und API Keys.
+</code></pre>
+<p>und:</p>
+<pre><code class="language-text">Security Update 2026:
+Passwort-Authentifizierung wurde deaktiviert.
+Verwende OAuth oder API Keys.
+</code></pre>
+<p>Ein reiner Relevanzscore kann beide Passagen nahezu gleich bewerten.</p>
+<p>Wenn die Evaluation nur prüft, ob die Antwort irgendeine gültige Authentifizierungsmethode nennt, kann das System sogar noch gut abschneiden.</p>
+<p>Das ist einer der Gründe, warum RAG-Benchmarks manchmal besser aussehen als reale Systeme.</p>
+<p>Viele Benchmark-Aufgaben behandeln Wissen implizit als statisch:</p>
+<pre><code class="language-text">question -&gt; one correct passage -&gt; one correct answer
+</code></pre>
+<p>In echten Wissensbasen ist Wissen aber versioniert.</p>
+<p>Policies ändern sich.</p>
+<p>APIs werden deprecated.</p>
+<p>Preise ändern sich.</p>
+<p>Projekte werden umbenannt.</p>
+<p>Teams schreiben neue Dokumentation, ohne die alte zu löschen.</p>
+<p>Damit ist ein Retrieval-Korpus nicht einfach eine Datenbank mit Fakten.</p>
+<p>Er ist eher eine Sammlung von <strong>Aussagen, die zu unterschiedlichen Zeitpunkten von unterschiedlichen Quellen gemacht wurden</strong>.</p>
+<p>Und das ist deutlich schwieriger zu verarbeiten.</p>
+<hr>
+<h2 id="Mehr-Kontext-kann-die-Antwort-sogar-schlechter-machen"><a href="#Mehr-Kontext-kann-die-Antwort-sogar-schlechter-machen" class="headerlink" title="Mehr Kontext kann die Antwort sogar schlechter machen"></a>Mehr Kontext kann die Antwort sogar schlechter machen</h2><p>Wenn ein System unsicher ist, liegt die naheliegende Reaktion oft darin, mehr Dokumente abzurufen.</p>
+<p>Top-3 reicht nicht? Dann Top-10.</p>
+<p>Top-10 reicht nicht? Dann eben noch mehr Kontext.</p>
+<p>Das verbessert den Recall.</p>
+<p>Aber mehr Recall führt nicht automatisch zu besseren Antworten.</p>
+<p>Nehmen wir an, der Korpus enthält:</p>
+<pre><code class="language-text">2 aktuelle Dokumente
+4 veraltete Dokumente
+3 Forum-Diskussionen
+1 spekulativen Design-Vorschlag
+</code></pre>
+<p>Alle zehn Texte erwähnen dasselbe Feature.</p>
+<p>Top-2 könnte genau die beiden aktuellen Dokumente liefern und damit zu einer korrekten Antwort führen.</p>
+<p>Top-10 liefert dagegen die komplette Historie aller Aussagen, die zu diesem Feature jemals gemacht wurden — inklusive der inzwischen falschen.</p>
+<p>Das Modell hat nun mehr Informationen.</p>
+<p>Aber auch eine deutlich schwierigere Aufgabe.</p>
+<p>Ich denke dabei gern an <strong>Context Dilution</strong>: Mehr Kontext ist nur dann hilfreich, wenn das System auch zuverlässig unterscheiden kann, welche Teile davon tatsächlich zählen.</p>
+<p>Das Problem ist also nicht nur, dass irrelevante Chunks Tokens verbrauchen.</p>
+<p>Auch relevante, aber widersprüchliche Informationen machen die Aufgabe schwerer.</p>
+<p>Als grobes Denkmodell:</p>
+<pre><code class="language-text">answer quality
+    =
+retrieval coverage
+    ×
+evidence resolution quality
+</code></pre>
+<p>Wenn man nur die Retrieval-Abdeckung erhöht und ignoriert, wie das Modell Konflikte zwischen Quellen auflöst, bringt „mehr Kontext“ irgendwann keinen Vorteil mehr.</p>
+<p>In manchen Fällen schadet es sogar.</p>
+<hr>
+<h2 id="Unvollstandige-Quellen-sind-fast-das-Gegenstuck-dazu"><a href="#Unvollstandige-Quellen-sind-fast-das-Gegenstuck-dazu" class="headerlink" title="Unvollständige Quellen sind fast das Gegenstück dazu"></a>Unvollständige Quellen sind fast das Gegenstück dazu</h2><p>Bei widersprüchlichen Dokumenten sieht man den Konflikt wenigstens.</p>
+<p>Bei unvollständigen Informationen sieht zunächst alles plausibel aus.</p>
+<p>Angenommen, in einem Dokument steht:</p>
+<blockquote>
+<p>Enterprise-Kunden dürfen Audit Logs exportieren.</p>
+</blockquote>
+<p>Der Nutzer fragt:</p>
+<blockquote>
+<p>Kann ich Audit Logs exportieren?</p>
+</blockquote>
+<p>Die Passage passt perfekt.</p>
+<p>Ein Modell könnte antworten:</p>
+<blockquote>
+<p>Ja, Audit Logs können exportiert werden.</p>
+</blockquote>
+<p>Aber vielleicht nutzt der aktuelle Nutzer nur den Free-Tarif.</p>
+<p>Die Aussage im Dokument war nicht falsch.</p>
+<p>Sie war nur an eine Bedingung geknüpft.</p>
+<p>Was fehlt, ist die Information, ob diese Bedingung im konkreten Fall erfüllt ist.</p>
+<p>Die eigentliche Struktur ist:</p>
+<pre><code class="language-text">Enterprise(user) -&gt; CanExportLogs(user)
+</code></pre>
+<p>Die Quelle liefert aber nur die Regel.</p>
+<p>Nicht die zusätzliche Voraussetzung:</p>
+<pre><code class="language-text">Enterprise(current_user)
+</code></pre>
+<p>RAG-Systeme überspringen diesen Unterschied erstaunlich oft.</p>
+<p>Gerade bei Berechtigungen, Voraussetzungen, Ausnahmen oder Prozessregeln wird das schnell problematisch.</p>
+<p>Die bessere Antwort wäre:</p>
+<blockquote>
+<p>Enterprise-Kunden können Audit Logs exportieren. Aus den vorliegenden Informationen geht allerdings nicht hervor, ob dein Account dazu berechtigt ist.</p>
+</blockquote>
+<p>Das klingt weniger entschieden.</p>
+<p>Ist aber deutlich besser belegt.</p>
+<hr>
+<h2 id="Perfektes-Retrieval-lost-keine-mehrdeutige-Frage"><a href="#Perfektes-Retrieval-lost-keine-mehrdeutige-Frage" class="headerlink" title="Perfektes Retrieval löst keine mehrdeutige Frage"></a>Perfektes Retrieval löst keine mehrdeutige Frage</h2><p>Es gibt noch eine andere Fehlerklasse: Die Dokumente sind korrekt und vollständig, aber die Nutzerfrage selbst lässt mehrere Interpretationen zu.</p>
+<p>Nehmen wir eine Engineering-Wissensbasis mit zwei Bedeutungen von „Memory“:</p>
+<pre><code class="language-text">Memory:
+Langfristiger Conversation Storage des Agents.
+
+Memory:
+GPU-Speicherbedarf während der Inferenz.
+</code></pre>
+<p>Dann fragt jemand:</p>
+<blockquote>
+<p>Wie viel Memory braucht das System?</p>
+</blockquote>
+<p>Der Retriever kann beide Themen korrekt finden.</p>
+<p>Das ist kein Retrieval-Fehler.</p>
+<p>Die Frage ist schlicht nicht eindeutig.</p>
+<p>Ein Modell, das darauf optimiert ist, immer eine direkte Antwort zu geben, entscheidet sich möglicherweise stillschweigend für eine der beiden Bedeutungen.</p>
+<p>Ein robusteres System sollte erkennen, wenn die gefundenen Quellen zu mehreren plausiblen Interpretationen passen.</p>
+<p>Daraus ergibt sich für mich eine einfache Regel:</p>
+<blockquote>
+<p>Manchmal ist die beste Antwort eine Rückfrage.</p>
+</blockquote>
+<p>RAG-Systeme werden oft so evaluiert, als wäre eine Rückfrage oder ein bewusstes „Das lässt sich aus den Quellen nicht eindeutig sagen“ automatisch ein Fehler.</p>
+<p>Im Produktivbetrieb kann genau das ein Zeichen dafür sein, dass das System mit Unsicherheit vernünftig umgeht.</p>
+<hr>
+<h2 id="Retrieval-und-Quellenbewertung-wurde-ich-getrennt-testen"><a href="#Retrieval-und-Quellenbewertung-wurde-ich-getrennt-testen" class="headerlink" title="Retrieval und Quellenbewertung würde ich getrennt testen"></a>Retrieval und Quellenbewertung würde ich getrennt testen</h2><p>Wenn ich ein RAG-System für den produktiven Einsatz evaluieren würde, würde ich nicht bei Recall@K oder Answer Accuracy aufhören.</p>
+<p>Ich würde bewusst Fälle bauen, in denen das Retrieval funktioniert und das eigentliche Problem erst danach beginnt.</p>
+<p>Zum Beispiel:</p>
+<table>
+<thead>
+<tr>
+<th>Test</th>
+<th>Gefundene Dokumente</th>
+<th>Erwartetes Verhalten</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Konsistente Quellen</td>
+<td>Mehrere übereinstimmende Dokumente</td>
+<td>Klar antworten</td>
+</tr>
+<tr>
+<td>Aktuell vs. veraltet</td>
+<td>Zwei Versionen derselben Policy</td>
+<td>Aktuelle Quelle bevorzugen</td>
+</tr>
+<tr>
+<td>Unterschiedliche Autorität</td>
+<td>Forum vs. offizielle Doku</td>
+<td>Offizielle Quelle bevorzugen</td>
+</tr>
+<tr>
+<td>Echte Mehrdeutigkeit</td>
+<td>Zwei plausible Interpretationen</td>
+<td>Rückfrage stellen</td>
+</tr>
+<tr>
+<td>Fehlende Bedingung</td>
+<td>Regel bekannt, Nutzerstatus unbekannt</td>
+<td>Einschränkung offen nennen</td>
+</tr>
+<tr>
+<td>Direkter Widerspruch</td>
+<td>Gleichwertige Quellen widersprechen sich</td>
+<td>Widerspruch sichtbar machen</td>
+</tr>
+<tr>
+<td>Irreführende Mehrheit</td>
+<td>1 aktuelle + 5 veraltete Quellen</td>
+<td>Nicht nach Mehrheit entscheiden</td>
+</tr>
+<tr>
+<td>Keine ausreichende Grundlage</td>
+<td>Verwandte Dokumente, aber keine klare Antwort</td>
+<td>Keine Sicherheit vortäuschen</td>
+</tr>
+</tbody></table>
+<p>Die Trennung, die mich dabei interessiert, ist:</p>
+<pre><code class="language-text">Hat das System die richtigen Informationen gefunden?
+
+versus
+
+Hat es mit diesen Informationen richtig gearbeitet?
+</code></pre>
+<p>Das sollten zwei verschiedene Messgrößen sein.</p>
+<p>Sonst landen Retrieval-Fehler und Reasoning-Fehler in derselben Accuracy-Zahl, und man weiß am Ende nur, <em>dass</em> etwas nicht funktioniert hat — aber nicht, <em>wo</em>.</p>
+<hr>
+<h2 id="Was-ich-an-der-Architektur-andern-wurde"><a href="#Was-ich-an-der-Architektur-andern-wurde" class="headerlink" title="Was ich an der Architektur ändern würde"></a>Was ich an der Architektur ändern würde</h2><p>Für widersprüchliche Quellen gibt es keinen einzelnen Fix.</p>
+<p>Ein paar Maßnahmen helfen aber sehr zuverlässig.</p>
+<h3 id="1-Metadaten-schon-beim-Retrieval-nutzen"><a href="#1-Metadaten-schon-beim-Retrieval-nutzen" class="headerlink" title="1. Metadaten schon beim Retrieval nutzen"></a>1. Metadaten schon beim Retrieval nutzen</h3><p>Veraltete Dokumente kann man oft bereits vor der semantischen Suche herausfiltern.</p>
+<p>Zum Beispiel:</p>
+<pre><code class="language-python">results = vector_store.search(
+    query,
+    filters={
+        &quot;status&quot;: &quot;current&quot;,
+        &quot;product_version&quot;: current_version
+    }
+)
+</code></pre>
+<p>Das ist günstig, deterministisch und effektiv.</p>
+<p>Der Haken ist offensichtlich: Die Metadaten müssen stimmen.</p>
+<p>Wenn Versionierung und Dokumentenpflege schlecht sind, übernimmt das RAG-System dieses Chaos einfach.</p>
+<h3 id="2-Nicht-nur-nach-semantischer-Ahnlichkeit-reranken"><a href="#2-Nicht-nur-nach-semantischer-Ahnlichkeit-reranken" class="headerlink" title="2. Nicht nur nach semantischer Ähnlichkeit reranken"></a>2. Nicht nur nach semantischer Ähnlichkeit reranken</h3><p>Ein zweiter Ranking-Schritt kann zusätzliche Signale berücksichtigen:</p>
+<ul>
+<li>semantische Relevanz,</li>
+<li>Veröffentlichungsdatum,</li>
+<li>Verlässlichkeit der Quelle,</li>
+<li>Dokumentstatus,</li>
+<li>Produktversion,</li>
+<li>Gültigkeitsbereich.</li>
+</ul>
+<p>Als Denkmodell:</p>
+<pre><code class="language-text">score =
+    relevance
+  + authority
+  + freshness
+  + scope_match
+</code></pre>
+<p>Ich würde das nicht zwingend als echte lineare Formel implementieren.</p>
+<p>Als mentale Trennung ist es aber hilfreich.</p>
+<p>Eine Quelle kann hochrelevant und trotzdem ungeeignet für die finale Antwort sein.</p>
+<h3 id="3-Widerspruche-explizit-prufen"><a href="#3-Widerspruche-explizit-prufen" class="headerlink" title="3. Widersprüche explizit prüfen"></a>3. Widersprüche explizit prüfen</h3><p>Für wichtigere Anwendungen würde ich zwischen Retrieval und Antwortgenerierung einen zusätzlichen Schritt einbauen, der die gefundenen Aussagen miteinander vergleicht.</p>
+<pre><code class="language-mermaid">flowchart TD
+    Q[Query] --&gt; R[Retrieve]
+    R --&gt; E[Evidence Analysis]
+    E --&gt;|consistent| A[Generate Answer]
+    E --&gt;|conflicting| X[Resolve or Surface Conflict]
+    E --&gt;|insufficient| U[Abstain / Ask]
+</code></pre>
+<p>Dieser Schritt kann zum Beispiel prüfen auf:</p>
+<ul>
+<li>unterschiedliche Zahlenwerte,</li>
+<li>widersprüchliche Policy-Aussagen,</li>
+<li>Versionskonflikte,</li>
+<li>sich gegenseitig ausschließende Claims,</li>
+<li>fehlende Voraussetzungen.</li>
+</ul>
+<p>Das kostet zusätzliche Latenz und möglicherweise einen weiteren Modellaufruf.</p>
+<p>Wenn das System sonst selbstbewusst eine falsche Berechtigungsregel oder eine alte Refund Policy ausgibt, ist dieser zusätzliche Call aber oft gut investiert.</p>
+<h3 id="4-Erst-Claims-strukturieren-dann-Fliestext-schreiben"><a href="#4-Erst-Claims-strukturieren-dann-Fliestext-schreiben" class="headerlink" title="4. Erst Claims strukturieren, dann Fließtext schreiben"></a>4. Erst Claims strukturieren, dann Fließtext schreiben</h3><p>Eine Architektur, die ich konzeptionell sinnvoll finde, trennt diese Arbeit stärker auf:</p>
+<pre><code class="language-text">documents
+    ↓
+extract supported claims
+    ↓
+attach provenance
+    ↓
+resolve claim relationships
+    ↓
+generate final answer
+</code></pre>
+<p>Das Modell muss dann nicht gleichzeitig lesen, vergleichen, Schlussfolgerungen ziehen und bereits eine schön formulierte Antwort schreiben.</p>
+<p>Zum Beispiel:</p>
+<pre><code class="language-json">[
+  {
+    &quot;claim&quot;: &quot;Remote work limit is 3 days/week&quot;,
+    &quot;source&quot;: &quot;handbook_2025&quot;,
+    &quot;status&quot;: &quot;superseded&quot;
+  },
+  {
+    &quot;claim&quot;: &quot;Remote work limit is 2 days/week&quot;,
+    &quot;source&quot;: &quot;policy_2026&quot;,
+    &quot;status&quot;: &quot;current&quot;
+  }
+]
+</code></pre>
+<p>Die finale Generierung bekommt dadurch ein deutlich saubereres Problem.</p>
+<p>Natürlich steigt dafür die Pipeline-Komplexität.</p>
+<p>Und jede zusätzliche Komponente ist am Ende auch eine weitere Stelle, an der etwas schiefgehen kann.</p>
+<p>Das gehört wohl einfach dazu.</p>
+<hr>
+<h2 id="Das-Modell-sollte-sagen-durfen-„Die-Quellen-widersprechen-sich“"><a href="#Das-Modell-sollte-sagen-durfen-„Die-Quellen-widersprechen-sich“" class="headerlink" title="Das Modell sollte sagen dürfen: „Die Quellen widersprechen sich“"></a>Das Modell sollte sagen dürfen: „Die Quellen widersprechen sich“</h2><p>Eine der wirksamsten Maßnahmen ist gleichzeitig ziemlich unspektakulär: Man ändert, was überhaupt als gute Antwort gilt.</p>
+<p>Wenn ein Modell immer eine einzige eindeutige Antwort liefern soll, wird Unsicherheit schnell in Sicherheit umformuliert.</p>
+<p>Ich würde ausdrücklich Antworten erlauben wie:</p>
+<blockquote>
+<p>Die gefundenen Quellen widersprechen sich.</p>
+</blockquote>
+<blockquote>
+<p>Das neuere Dokument sagt X, während eine ältere Quelle Y nennt.</p>
+</blockquote>
+<blockquote>
+<p>Aus den verfügbaren Informationen lässt sich nicht erkennen, ob diese Bedingung im aktuellen Fall erfüllt ist.</p>
+</blockquote>
+<blockquote>
+<p>Die Frage lässt zwei plausible Interpretationen zu.</p>
+</blockquote>
+<p>Damit ändert sich das Ziel.</p>
+<p>Das System soll nicht mehr einfach nur <em>eine Antwort produzieren</em>.</p>
+<p>Es soll <strong>die tatsächliche Quellenlage korrekt wiedergeben</strong>.</p>
+<p>Für mich ist das eine deutlich bessere Definition von Grounding.</p>
+<hr>
+<h2 id="Was-ich-tatsachlich-bauen-wurde"><a href="#Was-ich-tatsachlich-bauen-wurde" class="headerlink" title="Was ich tatsächlich bauen würde"></a>Was ich tatsächlich bauen würde</h2><p>Für eine kleine interne RAG-Anwendung würde ich nicht sofort eine aufwendige mehrstufige Reasoning-Pipeline bauen.</p>
+<p>Ich würde mit den langweiligen Dingen anfangen:</p>
+<ol>
+<li>saubere Dokumentversionierung,</li>
+<li>brauchbare Metadaten,</li>
+<li>Metadata Filtering,</li>
+<li>Reranking,</li>
+<li>sichtbare Quellenangaben,</li>
+<li>die Möglichkeit, Unsicherheit offen zu benennen,</li>
+<li>ein Evaluationsset mit bewusst widersprüchlichen Fällen.</li>
+</ol>
+<p>Danach würde ich die abgerufenen Chunks zusammen mit den generierten Antworten loggen.</p>
+<p>Nicht nur bei offensichtlichen Fehlern.</p>
+<p>Auch bei vermeintlich erfolgreichen Antworten.</p>
+<p>Besonders interessant wären für mich Fälle, in denen der Retriever widersprüchliche Informationen liefert und das Modell daraus eine verdächtig glatte Antwort macht.</p>
+<p>Solche Beispiele sagen oft mehr über die Robustheit eines Systems aus als ein kompletter Retrieval-Ausfall.</p>
+<p>Für sensiblere Anwendungen — etwa Policy-Assistenten, technischen Support, Finanz-Workflows oder Tool-Using Agents — würde ich zusätzlich eine explizite Konfliktauflösung und Herkunftsverfolgung der Aussagen einbauen.</p>
+<p>Und ich würde mindestens drei Dinge getrennt messen:</p>
+<pre><code class="language-text">retrieval correctness
+evidence interpretation correctness
+final answer correctness
+</code></pre>
+<p>Eine einzige End-to-End-Accuracy-Zahl versteckt dafür einfach zu viel.</p>
+<hr>
+<h2 id="Grounding-ist-ein-Verhalten-kein-Context-Window"><a href="#Grounding-ist-ein-Verhalten-kein-Context-Window" class="headerlink" title="Grounding ist ein Verhalten, kein Context Window"></a>Grounding ist ein Verhalten, kein Context Window</h2><p>Früher habe ich Grounding bei RAG vor allem räumlich gedacht.</p>
+<p>Die relevante Information musste <strong>im Context Window stehen</strong>.</p>
+<p>Wenn sie dort war, hatte das Modell Zugriff auf die Wahrheit.</p>
+<p>Aber Zugriff ist nicht dasselbe wie Grounding.</p>
+<p>Eine Antwort ist erst dann wirklich gut durch die Quellen gedeckt, wenn das System stärkere Quellen gegenüber schwächeren priorisiert, Bedingungen berücksichtigt, Widersprüche erkennt, zeitliche Änderungen einordnet und offen sagt, wenn die vorhandenen Dokumente keine eindeutige Aussage zulassen.</p>
+<p>Damit ähnelt Grounding weniger einer Dokumentensuche und mehr einem disziplinierten Umgang mit Quellen.</p>
+<p>Der Retriever kann seine Arbeit perfekt machen und dem Modell trotzdem zwei unterschiedliche Versionen derselben Realität liefern.</p>
+<p>Dann lautet die interessante Frage nicht mehr:</p>
+<blockquote>
+<p>Haben wir das richtige Dokument gefunden?</p>
+</blockquote>
+<p>Sondern:</p>
+<blockquote>
+<p>Weiß das System, was es tun soll, wenn sich die richtigen Dokumente widersprechen?</p>
+</blockquote>
+<hr>
+<h2 id="Kurztext-fur-die-Startseite"><a href="#Kurztext-fur-die-Startseite" class="headerlink" title="Kurztext für die Startseite"></a>Kurztext für die Startseite</h2><p>Ein RAG-System kann genau die richtigen Dokumente finden und trotzdem falsch antworten. Veraltete Quellen, widersprüchliche Versionen, fehlende Bedingungen und Mehrdeutigkeit machen Grounding zu mehr als nur einem Retrieval-Problem.</p>
+<h2 id="Tags"><a href="#Tags" class="headerlink" title="Tags"></a>Tags</h2><p><code>RAG</code> · <code>LLM</code> · <code>Retrieval-Augmented Generation</code> · <code>LLM Evaluation</code> · <code>AI Engineering</code> · <code>Grounding</code> · <code>Robustness</code></p>
+
+	</div>
+
+	<div class="page-template-comments">
+		
+	</div>
+</div>
+
+<div class="paginator">
+	
+</div>
+  
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Zhaokun Wang</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span data-i18n="site_posts" data-i18n-arg="17">
+                        Insgesamt 17 Beiträge
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">BESUCHERZAHL</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">GESAMTSEITENAUFRUFE</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">ANGETRIEBEN VON <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a></span>
+            <span class="text-sm lg:block">THEME&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+            <div>
+                <span data-i18n="runtime">Blog online seit</span> <span class="odometer" id="runtime_days" ></span> <span data-i18n="days">Tagen</span> <span class="odometer" id="runtime_hours"></span> <span data-i18n="hours">Std</span> <span class="odometer" id="runtime_minutes"></span> <span data-i18n="minutes">Min</span> <span class="odometer" id="runtime_seconds"></span> <span data-i18n="seconds">Sek</span>
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-translate-de flex justify-center items-center" title="翻译为德语">
+			<span class="translate-lang-label">DE</span>
+		</li>
+
+		<li class="right-bottom-tools tool-translate-zh flex justify-center items-center" title="翻译为中文">
+			<span class="translate-lang-label">文</span>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	<script src="/js/ui-language-switcher.js" defer></script>
+	<script src="/js/immersive-translate.js" defer></script>
+	
+</body>
+
+</html>

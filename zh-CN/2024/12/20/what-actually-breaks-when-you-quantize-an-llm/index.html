@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Full Stack,Web Development,Machine Learning,NLP,LLM,Technology">
+    
+    <meta name="author" content="Zhaokun Wang">
+    
+    <!-- Completely eliminate flash of wrong theme -->
+    <script>
+        (function() {
+            const THEME_KEY = "REDEFINE-THEME-STATUS";
+            const DARK = "dark", LIGHT = "light";
+            
+            // Get preferred theme
+            function getTheme() {
+                try {
+                    const saved = localStorage.getItem(THEME_KEY);
+                    if (saved) {
+                        const { isDark } = JSON.parse(saved);
+                        return isDark ? DARK : LIGHT;
+                    }
+                } catch (e) {}
+                
+                return matchMedia("(prefers-color-scheme: dark)").matches ? DARK : LIGHT;
+            }
+            
+            // Apply theme to document
+            function applyTheme(theme) {
+                const isDark = theme === DARK;
+                const root = document.documentElement;
+                
+                // Set data attribute for CSS variables
+                root.setAttribute("data-theme", theme);
+                
+                // Set classes for compatibility
+                root.classList.add(theme);
+                root.classList.remove(isDark ? LIGHT : DARK);
+                root.style.colorScheme = theme;
+            }
+            
+            // Initial application
+            const theme = getTheme();
+            applyTheme(theme);
+            
+            // Listen for system preference changes
+            matchMedia("(prefers-color-scheme: dark)").addEventListener("change", ({ matches }) => {
+                // Only update if using system preference (no localStorage entry)
+                if (!localStorage.getItem(THEME_KEY)) {
+                    applyTheme(matches ? DARK : LIGHT);
+                }
+            });
+            
+            // Set body classes once DOM is ready
+            if (document.readyState !== "loading") {
+                document.body.classList.add(theme + "-mode");
+            } else {
+                document.addEventListener("DOMContentLoaded", () => {
+                    document.body.classList.add(theme + "-mode");
+                    document.body.classList.remove((theme === DARK ? LIGHT : DARK) + "-mode");
+                });
+            }
+        })();
+    </script>
+    
+    <!-- Critical CSS to prevent flash -->
+    <style>
+        :root[data-theme="dark"] {
+            --background-color: #202124;
+            --background-color-transparent: rgba(32, 33, 36, 0.6);
+            --second-background-color: #2d2e32;
+            --third-background-color: #34353a;
+            --third-background-color-transparent: rgba(32, 33, 36, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #ffffff;
+            --second-text-color: #eeeeee;
+            --third-text-color: #bebec6;
+            --fourth-text-color: #999999;
+            --default-text-color: #bebec6;
+            --invert-text-color: #373D3F;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(255, 255, 255, 0.08);
+            --shadow-color-2: rgba(255, 255, 255, 0.05);
+        }
+        
+        :root[data-theme="light"] {
+            --background-color: #fff;
+            --background-color-transparent: rgba(255, 255, 255, 0.6);
+            --second-background-color: #f8f8f8;
+            --third-background-color: #f2f2f2;
+            --third-background-color-transparent: rgba(241, 241, 241, 0.6);
+            --primary-color: #0066CC;
+            --first-text-color: #16171a;
+            --second-text-color: #2f3037;
+            --third-text-color: #5e5e5e;
+            --fourth-text-color: #eeeeee;
+            --default-text-color: #373D3F;
+            --invert-text-color: #bebec6;
+            --border-color: rgba(0, 0, 0, 0.08);
+            --selection-color: #0066CC;
+            --shadow-color-1: rgba(0, 0, 0, 0.08);
+            --shadow-color-2: rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+        
+        /* Apply body classes as soon as DOM is ready */
+        :root[data-theme="dark"] body {
+            background-color: var(--background-color);
+            color: var(--default-text-color);
+        }
+    </style>
+    
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://bufferhund.github.io/zh-cn/2024/12/20/what-actually-breaks-when-you-quantize-an-llm/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+    
+    
+        
+        <meta name="description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LLM 量化之后，真正变化的是什么？">
+<meta property="og:url" content="https://bufferhund.github.io/zh-CN/2024/12/20/what-actually-breaks-when-you-quantize-an-llm/index.html">
+<meta property="og:site_name" content="Zhaokun&#39;s Blog 2025">
+<meta property="og:description" content="Hexo Theme Redefine, Redefine Your Hexo Journey.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://bufferhund.github.io/images/redefine-og.webp">
+<meta property="article:published_time" content="2024-12-20T12:50:00.000Z">
+<meta property="article:modified_time" content="2026-08-08T18:06:12.994Z">
+<meta property="article:author" content="Zhaokun">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="AI Agent">
+<meta property="article:tag" content="Evaluation">
+<meta property="article:tag" content="RAG">
+<meta property="article:tag" content="Quantization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://bufferhund.github.io/images/redefine-og.webp">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/redefine-favicon.svg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/redefine-favicon.svg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/redefine-favicon.svg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            LLM 量化之后，真正变化的是什么？ | Zhaokun&#39;s Blog
+        
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/css/build/tailwind.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+    
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"bufferhund.github.io","root":"/","language":"en"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":false,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://cn.vercount.one/js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"side_tools":{"gear_rotation":true,"auto_expand":false},"open_graph":{"enable":true,"image":"/images/redefine-og.webp","description":"Hexo Theme Redefine, Redefine Your Hexo Journey."},"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"Zhaokun's Blog","subtitle":{"text":[],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/BufferHund","instagram":null,"zhihu":null,"linkedin":"https://www.linkedin.com/in/zhaokun-wang-8802452a9","mail":null,"email":"mailto:wang@cl.uni-heidelberg.de"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"11.4.1"}},"version":"2.8.5","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Research":{"path":"/research","icon":"fa-regular fa-brain"},"Projects":{"path":"/projects","icon":"fa-regular fa-project-diagram"},"Talks":{"path":"/talks","icon":"fa-regular fa-comments"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"},"About":{"path":"/about","icon":"fa-regular fa-user"}},"search":{"enable":false,"preload":false},"langs":{"enable":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"};
+    window.data = {"masonry":false};
+  </script>
+    <script id="hexo-i18n-dicts" type="application/json">
+{"en":{"search":"Search...","toc":"On this page","prev":"Prev","next":"Next","prev_posts":"Prev posts","next_posts":"Next posts","page":"Page %d","recent_posts":"Recent Posts","share":"Share","powered_by":"POWERED BY %s","theme":"THEME","rss_feed":"RSS Feed","category":"Category","categories":"Categories","tag":"Tag","tags":"Tags","post":"Post","posts":"Posts","tagcloud":"Tag Cloud","comment":"Comment","comments":"Comments","home":"Home","research":"Research","projects":"Projects","talks":"Talks","archive":"Archive","archives":"Archives","top":"TOP","sticky":"Sticky","go-back-home":"Go Back Home","about":"About","changelog":"Changelog","links":"Links","link":"Link","friends":"Friends","friend":"Friend","timeline":"Timeline","shuoshuo":"Shuoshuo","site_uv":"VISITOR COUNT","site_pv":"TOTAL PAGE VIEWS","read_more":"Read more","wordcount":"Words","min2read":"Mins","status":"Status","runtime":"Blog up for","days":"days","hours":"hrs","minutes":"Min","seconds":"Sec","optimized_by":"and Optimized by Evan","rights":"All Rights Reserved","site_posts":"%s posts in total","site_wordcount":"%s words in total","copyright":{"author":"Author","title":"Title","link":"Link","create_time":"Created at","update_time":"Updated at","license_title":"License","license_content":"This work is licensed under %s.","all_rights_reserved":"All Rights Reserved &#169; %s","public_domain":"This work is in the public domain."},"ago":{"second":"%s seconds ago","minute":"%s minutes ago","hour":"%s hours ago","day":"%s days ago","week":"%s weeks ago","month":"%s months ago","year":"%s years ago"},"create_time":"Created","update_time":"Updated","expired":"This post is written %s days ago, and the content may not be up to date."},"de":{"search":"Suchen...","toc":"Auf dieser Seite","prev":"Zurück","next":"Weiter","prev_posts":"Vorherige Beiträge","next_posts":"Nächste Beiträge","page":"Seite %d","recent_posts":"Neueste Beiträge","share":"Teilen","powered_by":"ANGETRIEBEN VON %s","theme":"THEME","rss_feed":"RSS-Feed","category":"Kategorie","categories":"Kategorien","tag":"Schlagwort","tags":"Schlagwörter","post":"Beitrag","posts":"Beiträge","tagcloud":"Schlagwörter-Wolke","comment":"Kommentar","comments":"Kommentare","home":"Start","research":"Forschung","projects":"Projekte","talks":"Vorträge","archive":"Archiv","archives":"Archive","top":"NACH OBEN","sticky":"Angeheftet","go-back-home":"Zurück zur Startseite","about":"Über","changelog":"Änderungsprotokoll","links":"Links","link":"Link","friends":"Freunde","friend":"Freund","timeline":"Zeitleiste","shuoshuo":"Shuoshuo","site_uv":"BESUCHERZAHL","site_pv":"GESAMTSEITENAUFRUFE","read_more":"Weiterlesen","wordcount":"Wörter","min2read":"Min","status":"Status","runtime":"Blog online seit","days":"Tagen","hours":"Std","minutes":"Min","seconds":"Sek","optimized_by":"und optimiert von Evan","rights":"Alle Rechte vorbehalten","site_posts":"Insgesamt %s Beiträge","site_wordcount":"Insgesamt %s Wörter","copyright":{"author":"Autor","title":"Titel","link":"Link","create_time":"Erstellt am","update_time":"Aktualisiert am","license_title":"Lizenz","license_content":"Dieses Werk ist lizenziert unter %s.","all_rights_reserved":"Alle Rechte vorbehalten &#169; %s","public_domain":"Dieses Werk ist gemeinfrei."},"ago":{"second":"vor %s Sekunden","minute":"vor %s Minuten","hour":"vor %s Stunden","day":"vor %s Tagen","week":"vor %s Wochen","month":"vor %s Monaten","year":"vor %s Jahren"},"create_time":"Erstellt","update_time":"Aktualisiert","expired":"Dieser Beitrag wurde vor %s Tagen verfasst, der Inhalt ist möglicherweise nicht mehr aktuell."},"zh-CN":{"search":"站内搜索您需要的内容...","toc":"目录","prev":"上一页","next":"下一页","prev_posts":"上一篇","next_posts":"下一篇","page":"第 %d 页","recent_posts":"最新文章","share":"分享","powered_by":"由 %s 驱动","theme":"主题","rss_feed":"RSS Feed","category":"分类","categories":"分类","tag":"标签","tags":"标签","post":"文章","posts":"文章","tagcloud":"标签云","comment":"评论","comments":"评论","top":"置顶","sticky":"置顶","go-back-home":"回到首页","home":"首页","research":"研究","projects":"项目","talks":"学术报告","archive":"归档","archives":"归档","about":"关于","links":"链接","link":"链接","friends":"友情链接","friend":"友情链接","timeline":"时间轴","shuoshuo":"说说","site_uv":"访问人数","site_pv":"总访问量","read_more":"阅读全文","wordcount":"字","min2read":"分钟","changelog":"更新日志","status":"状态","runtime":"博客已运行","days":"天","hours":"小时","minutes":"分钟","seconds":"秒","optimized_by":"并由 Evan 进行优化","rights":"版权所有","site_posts":"共撰写了 %s 篇文章","site_wordcount":"共 %s 字","copyright":{"title":"标题","author":"作者","link":"链接","create_time":"创建于","update_time":"更新于","license_title":"版权声明","license_content":"本文章采用 %s 进行许可。","all_rights_reserved":"版权所有 &#169 %s，禁止转载。","public_domain":"本文为公有领域作品，可自由转载、引用。"},"ago":{"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"},"create_time":"创建","update_time":"更新","expired":"这篇文章最后更新于 %s 天前，内容可能已经过时。"}}
+</script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+
+    <!-- Language redirect: support ?lang=en|zh-CN|de|zh query params (for sharing links from resumes etc.) -->
+    <script>
+        (function () {
+            var m = /[?&]lang=([^&]+)/.exec(window.location.search);
+            if (!m) return;
+            var l = m[1].toLowerCase();
+            var map = { "en": "en", "zh-cn": "zh-CN", "zh": "zh-CN", "cn": "zh-CN", "chinese": "zh-CN", "de": "de", "deutsch": "de", "german": "de" };
+            var lang = map[l];
+            if (!lang) return;
+            var p = window.location.pathname;
+            if (lang === "en") {
+                p = p.replace(/^\/(zh-CN|zh-cn|de)\//, "/");
+            } else {
+                p = "/" + lang + p.replace(/^\/(zh-CN|zh-cn|de)\//, "/");
+            }
+            if (p !== window.location.pathname) {
+                window.location.replace(p);
+            }
+        })();
+    </script>
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+
+<body>
+	<div class="progress-bar-container">
+	
+
+	
+	<span class="pjax-progress-bar"></span>
+	<!--        <span class="swup-progress-icon">-->
+	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+	<!--        </span>-->
+	
+</div>
+
+<main class="page-container" id="swup">
+
+	
+
+	<div class="main-content-container flex flex-col justify-between min-h-dvh">
+		<div class="main-content-header">
+			
+<header class="navbar-container px-6 md:px-12">
+    <div class="navbar-content transition-navbar ">
+        <div class="left">
+            
+            <a class="logo-title" href="/zh-CN/">
+                
+                Zhaokun&#39;s Blog
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/zh-CN/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    <span data-i18n="home">首页</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/zh-CN/research"
+                                        >
+                                    <i class="fa-regular fa-brain fa-fw"></i>
+                                    <span data-i18n="research">研究</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/zh-CN/projects"
+                                        >
+                                    <i class="fa-regular fa-project-diagram fa-fw"></i>
+                                    <span data-i18n="projects">项目</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/zh-CN/talks"
+                                        >
+                                    <i class="fa-regular fa-comments fa-fw"></i>
+                                    <span data-i18n="talks">学术报告</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/zh-CN/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    <span data-i18n="archives">归档</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/zh-CN/about"
+                                        >
+                                    <i class="fa-regular fa-user fa-fw"></i>
+                                    <span data-i18n="about">关于</span>
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                    
+                        <li class="navbar-item navbar-lang-switch navbar-lang-dropdown-container" title="Site language">
+                            <i class="fa-solid fa-globe"></i>
+                            <ul class="navbar-lang-dropdown">
+                                <li><a href="#" data-lang="en">English</a></li>
+                                <li><a href="#" data-lang="zh-CN">简体中文</a></li>
+                                <li><a href="#" data-lang="de">Deutsch</a></li>
+                            </ul>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/zh-CN/"
+                        >
+                            <span data-i18n="home">
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/zh-CN/research"
+                        >
+                            <span data-i18n="research">
+                                研究
+                            </span>
+                            
+                                <i class="fa-regular fa-brain fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/zh-CN/projects"
+                        >
+                            <span data-i18n="projects">
+                                项目
+                            </span>
+                            
+                                <i class="fa-regular fa-project-diagram fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/zh-CN/talks"
+                        >
+                            <span data-i18n="talks">
+                                学术报告
+                            </span>
+                            
+                                <i class="fa-regular fa-comments fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/zh-CN/archives"
+                        >
+                            <span data-i18n="archives">
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/zh-CN/about"
+                        >
+                            <span data-i18n="about">
+                                关于
+                            </span>
+                            
+                                <i class="fa-regular fa-user fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">45</div>
+        <div class="label text-third-text-color text-sm" data-i18n="tags">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">4</div>
+        <div class="label text-third-text-color text-sm" data-i18n="categories">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">17</div>
+        <div class="label text-third-text-color text-sm" data-i18n="posts">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+		</div>
+
+		<div class="main-content-body transition-fade-up">
+			
+
+			<div class="main-content">
+				<div class="page-template-container">
+	
+
+	
+
+	<div class="page-template-content markdown-body">
+		
+		<h1>LLM 量化之后，真正变化的是什么？</h1>
+		
+
+		<h1 id="LLM-量化之后，真正变化的是什么？"><a href="#LLM-量化之后，真正变化的是什么？" class="headerlink" title="LLM 量化之后，真正变化的是什么？"></a>LLM 量化之后，真正变化的是什么？</h1><p><em>量化可以把显存占用大幅压下来，而 benchmark 分数看起来几乎没动。真正值得关心的是：在平均分还没明显变化之前，模型的行为是不是已经悄悄变了。</em></p>
+<p>我以前一直把量化看成一种很直接的部署优化。</p>
+<p>先用 FP16 跑一遍，记录显存、延迟和 benchmark；再换成 8-bit 或 4-bit，重新测一次。如果显存明显下降，分数只掉一点，那基本就算成功。</p>
+<p>这个判断方式并不算错。</p>
+<p>但它很容易把一个更重要的问题藏起来：</p>
+<p><strong>平均分差不多，不代表模型的行为也差不多。</strong></p>
+<p>一个量化后的模型，可能在总体准确率上和高精度版本几乎没有区别，但在一些更具体、也更接近真实系统的地方已经发生变化：</p>
+<ul>
+<li>多步指令更容易漏掉某一步；</li>
+<li>JSON、函数调用或结构化输出更容易出错；</li>
+<li>两个动作接近时，更容易选到另一个；</li>
+<li>长文本生成更容易偏离原来的轨迹；</li>
+<li>Agent 场景里，Tool Calling 的路径出现变化。</li>
+</ul>
+<p>这些问题通常不会表现成“模型突然不能用了”。</p>
+<p>更多时候，它们只是一些很小的数值扰动。</p>
+<p>绝大多数扰动都不会改变最终输出。</p>
+<p>但只要某次决策原本就很接近边界，一个很小的变化，就可能让模型选到另一个 token。后面的上下文随之改变，整条生成轨迹也可能慢慢分叉。</p>
+<p>所以，我现在更愿意问的不是：</p>
+<blockquote>
+<p>4-bit 量化会损失多少准确率？</p>
+</blockquote>
+<p>而是：</p>
+<blockquote>
+<p><strong>当数值精度下降之后，哪些行为最先变得不稳定？这些变化对实际系统到底重要不重要？</strong></p>
+</blockquote>
+<p>这样一来，量化就不只是压缩模型。</p>
+<p>它同时也是一次模型行为的重新评估。</p>
+<h2 id="显存收益当然是真的"><a href="#显存收益当然是真的" class="headerlink" title="显存收益当然是真的"></a>显存收益当然是真的</h2><p>先说最直观的部分。</p>
+<p>如果暂时只考虑模型权重，一个有 (N) 个参数的模型，大致需要：</p>
+<p>[<br>\text{Memory} \approx N \times \text{bits per parameter}<br>]</p>
+<p>以 7B 模型为例。</p>
+<p>FP16 下大约需要：</p>
+<p>[<br>7 \times 10^9 \times 16 \text{ bits}<br>\approx 14 \text{ GB}<br>]</p>
+<p>8-bit 大约 7 GB。</p>
+<p>4-bit 大约 3.5 GB。</p>
+<p>真实部署当然还会有别的开销，包括量化元数据、运行时 Buffer、激活值、KV Cache 和各种中间状态。</p>
+<p>所以这些数字不能直接当成最终显存占用。</p>
+<p>但数量级上的变化非常清楚。</p>
+<table>
+<thead>
+<tr>
+<th>权重格式</th>
+<th align="right">7B 模型权重占用（约）</th>
+<th align="right">相对 FP16</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FP32</td>
+<td align="right">28 GB</td>
+<td align="right">2×</td>
+</tr>
+<tr>
+<td>FP16 &#x2F; BF16</td>
+<td align="right">14 GB</td>
+<td align="right">1×</td>
+</tr>
+<tr>
+<td>INT8</td>
+<td align="right">7 GB</td>
+<td align="right">0.5×</td>
+</tr>
+<tr>
+<td>INT4</td>
+<td align="right">3.5 GB</td>
+<td align="right">0.25×</td>
+</tr>
+</tbody></table>
+<p>这个差距往往会直接改变一个模型能不能被实际部署。</p>
+<p>原本只能勉强塞进大显存 GPU 的模型，量化后可能一下子多出不少空间。</p>
+<p>原本只能在服务器上跑的小模型，可能开始适合本地部署。</p>
+<p>有些原本必须依赖远程 API 的应用，也会因为量化变得适合 On-device Inference。</p>
+<p>这也是量化最吸引人的地方：</p>
+<p><strong>收益直接、可测，而且通常很大。</strong></p>
+<p>但显存也是最容易测清楚的部分。</p>
+<p>真正麻烦的是，其他变化没这么直观。</p>
+<h2 id="量化不是“把数字缩小一点”这么简单"><a href="#量化不是“把数字缩小一点”这么简单" class="headerlink" title="量化不是“把数字缩小一点”这么简单"></a>量化不是“把数字缩小一点”这么简单</h2><p>最直观的理解是：</p>
+<p>量化把原来比较细的连续数值，映射到更少的一组离散值上。</p>
+<p>比如原始权重可能是：</p>
+<pre><code class="language-text">0.137
+0.141
+0.148
+0.905
+-0.332
+</code></pre>
+<p>低精度表示之后，可能变成：</p>
+<pre><code class="language-text">0.14
+0.14
+0.14
+0.91
+-0.35
+</code></pre>
+<p>每个误差单独看都不大。</p>
+<p>但模型里不是几个参数，而是几十亿甚至上百亿个参数。</p>
+<p>从数值上说，量化后的模型已经不是原来的模型了。</p>
+<p>一个极简的量化过程可以写成：</p>
+<p>[<br>q &#x3D; \text{round}\left(\frac{x}{s}\right)<br>]</p>
+<p>然后再近似恢复：</p>
+<p>[<br>\hat{x} &#x3D; s q<br>]</p>
+<p>这里的 (s) 是缩放因子，(q) 是量化后的值。</p>
+<p>真实的量化方法当然更复杂。</p>
+<p>会有 Per-Channel Scaling、Group-wise Quantization、Mixed Precision，也会对 Outlier 做特殊处理，还可能依赖 Calibration Data。</p>
+<p>这些方法之所以有必要，本质上是因为：</p>
+<p><strong>不同权重对误差的敏感程度不一样。</strong></p>
+<p>有些权重偏一点，模型行为几乎不受影响。</p>
+<p>有些权重只要变化很小，就可能影响后面的判断。</p>
+<p>而且这种敏感性，并不能只靠看权重大小判断出来。</p>
+<h2 id="更低的-bit-数，不一定换来更低的延迟"><a href="#更低的-bit-数，不一定换来更低的延迟" class="headerlink" title="更低的 bit 数，不一定换来更低的延迟"></a>更低的 bit 数，不一定换来更低的延迟</h2><p>从 FP16 压到 INT4 之后，很多人都会自然地产生一个期待：</p>
+<p>既然模型小了这么多，推理应该也快很多吧？</p>
+<p>不一定。</p>
+<p>真实推理更接近这样：</p>
+<pre><code class="language-text">       Quantized Weights
+               │
+               ▼
+      ┌──────────────────┐
+      │ Load from Memory │
+      └────────┬─────────┘
+               │
+               ▼
+      ┌──────────────────┐
+      │ Dequant / Kernel │
+      │ Computation      │
+      └────────┬─────────┘
+               │
+               ▼
+      ┌──────────────────┐
+      │ Activations      │
+      └────────┬─────────┘
+               │
+               ▼
+           Next Token
+</code></pre>
+<p>量化确实能减少内存带宽压力。</p>
+<p>这很重要，因为 LLM 的 autoregressive decoding 很多时候受限于 Memory Bandwidth。</p>
+<p>但推理速度还取决于很多别的东西：</p>
+<ul>
+<li>硬件是否原生支持这种低精度格式；</li>
+<li>推理框架有没有高效 Kernel；</li>
+<li>权重是否需要额外解包或反量化；</li>
+<li>Batch Size 多大；</li>
+<li>Context Length 多长；</li>
+<li>KV Cache 占了多少。</li>
+</ul>
+<p>比如，有些 GPU 对 INT8 支持得很好，但对某些 4-bit 格式的优化并不理想。</p>
+<p>这种情况下，模型虽然更小，但速度未必提升多少。</p>
+<p>极端一点，甚至可能更慢。</p>
+<p>还有一个很容易被忽略的部分：KV Cache。</p>
+<p>权重变成 4-bit，并不等于 KV Cache 也自动缩小到四分之一。</p>
+<p>在长上下文场景里，KV Cache 本身就可能吃掉大量显存。</p>
+<p>所以如果我要比较 FP16 和 INT4，我至少会分开看：</p>
+<ul>
+<li>模型加载后的显存；</li>
+<li>推理时的 Peak Memory；</li>
+<li>Time to First Token；</li>
+<li>Decode Tokens per Second。</li>
+</ul>
+<p>如果只写一句“4-bit 更快”，其实信息量很有限。</p>
+<p><strong>4-bit 只是权重表示方式，不是一整套推理系统。</strong></p>
+<h2 id="总分相近，可能掩盖很多局部变化"><a href="#总分相近，可能掩盖很多局部变化" class="headerlink" title="总分相近，可能掩盖很多局部变化"></a>总分相近，可能掩盖很多局部变化</h2><p>假设我跑了一个 benchmark。</p>
+<p>FP16：78.4%。</p>
+<p>INT4：78.1%。</p>
+<p>只差 0.3 个百分点。</p>
+<p>看起来几乎没有退化。</p>
+<p>这可能确实没什么问题。</p>
+<p>但如果再往下一层看，情况可能完全不同。</p>
+<p>假设测试集有 1,000 个样本。</p>
+<p>即使两个模型最后都答对了大约 780 个，也不代表它们答对的是同一批样本。</p>
+<p>例如：</p>
+<table>
+<thead>
+<tr>
+<th>任务类型</th>
+<th align="right">FP16</th>
+<th align="right">INT4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>常见知识问答</td>
+<td align="right">95%</td>
+<td align="right">95%</td>
+</tr>
+<tr>
+<td>简单分类</td>
+<td align="right">91%</td>
+<td align="right">91%</td>
+</tr>
+<tr>
+<td>多步指令</td>
+<td align="right">82%</td>
+<td align="right">78%</td>
+</tr>
+<tr>
+<td>JSON 生成</td>
+<td align="right">94%</td>
+<td align="right">88%</td>
+</tr>
+<tr>
+<td>稀有领域术语</td>
+<td align="right">71%</td>
+<td align="right">65%</td>
+</tr>
+<tr>
+<td>总体</td>
+<td align="right">86.6%</td>
+<td align="right">83.4%</td>
+</tr>
+</tbody></table>
+<p>但就算这样看，还是不够。</p>
+<p>我更想看 paired comparison：</p>
+<pre><code class="language-text">FP16 对，INT4 对：      720
+FP16 错，INT4 错：      140
+FP16 对，INT4 错：       80
+FP16 错，INT4 对：       60
+</code></pre>
+<p>最终总分只差 20 个样本。</p>
+<p>但实际上，两个模型在 <strong>140 个样本上给出了不同结果</strong>。</p>
+<p>这就完全不是“几乎没变化”这么简单了。</p>
+<p>平均分可以差不多，但模型在很多具体决策上已经发生了变化。</p>
+<p>对于只关心平均准确率的任务，这也许没关系。</p>
+<p>但如果模型要在 <code>read_database</code> 和 <code>delete_record</code> 之间做选择，这种局部变化就不能忽略。</p>
+<h2 id="很小的-Logit-变化，也可能把后面的轨迹全部带走"><a href="#很小的-Logit-变化，也可能把后面的轨迹全部带走" class="headerlink" title="很小的 Logit 变化，也可能把后面的轨迹全部带走"></a>很小的 Logit 变化，也可能把后面的轨迹全部带走</h2><p>自回归生成最有意思的地方，就在这里。</p>
+<p>假设高精度模型在某一步给出的概率是：</p>
+<pre><code class="language-text">&quot;approve&quot;     0.41
+&quot;reject&quot;      0.39
+&quot;request&quot;     0.12
+...
+</code></pre>
+<p>量化之后变成：</p>
+<pre><code class="language-text">&quot;approve&quot;     0.39
+&quot;reject&quot;      0.41
+&quot;request&quot;     0.12
+...
+</code></pre>
+<p>数值变化很小。</p>
+<p>但最终选中的 token 已经不一样了。</p>
+<p>接下来，下一个 token 会基于新的上下文生成。</p>
+<p>再下一个 token，又基于已经变化的上下文继续生成。</p>
+<p>于是，小扰动开始被不断传递：</p>
+<pre><code class="language-mermaid">flowchart LR
+    A[权重近似产生小误差] --&gt; B[Logit 略微变化]
+    B --&gt; C{下一个 Token 一样吗？}
+    C --&gt;|一样| D[生成基本保持一致]
+    C --&gt;|不一样| E[选择另一个 Token]
+    E --&gt; F[后续上下文变化]
+    F --&gt; G[整条序列逐渐分叉]
+</code></pre>
+<p>大多数时候，这种差异不会真正影响结果。</p>
+<p>如果某个 token 的优势足够明显，量化后的轻微扰动也不会改变最终选择。</p>
+<p>真正敏感的是那些“本来就差一点”的情况。</p>
+<p>当两个 token、两个动作、两个解释几乎打平时，量化误差就可能成为最后那个决定因素。</p>
+<p>所以，量化敏感性不仅取决于模型。</p>
+<p>它也取决于任务本身。</p>
+<h2 id="有些能力，比另一些更容易先出问题"><a href="#有些能力，比另一些更容易先出问题" class="headerlink" title="有些能力，比另一些更容易先出问题"></a>有些能力，比另一些更容易先出问题</h2><p>如果我要评估一个量化模型，我不会只跑一个通用 benchmark 就结束。</p>
+<p>我会专门挑那些“小变化可能造成大后果”的任务。</p>
+<p>结构化输出就是最明显的一类。</p>
+<p>比如一个 Agent 需要返回：</p>
+<pre><code class="language-json">{
+  &quot;tool&quot;: &quot;search_products&quot;,
+  &quot;arguments&quot;: {
+    &quot;query&quot;: &quot;wireless keyboard&quot;
+  }
+}
+</code></pre>
+<p>普通自然语言输出有很大的容错空间。</p>
+<p>换个说法，大多数时候不影响意思。</p>
+<p>但 Tool API 没这么宽容。</p>
+<p>多输出一句解释、漏掉一个引号、字段名拼错、Enum 值选错、少一个 Required Field，都可能直接从“基本正确”变成 Runtime Error。</p>
+<p>指令约束也是类似的问题。</p>
+<p>比如：</p>
+<blockquote>
+<p>总结这份文档，但不要输出任何个人身份信息。</p>
+</blockquote>
+<p>量化后的模型可能仍然很会总结。</p>
+<p>真正变差的，是它对第二条约束的遵守程度。</p>
+<p>长上下文任务里也可能出现另一种变化。</p>
+<p>模型没有突然失去阅读能力，但 Attention 分布发生轻微变化以后，一条本来就比较弱的证据，可能更容易输给一个 Distractor。</p>
+<p>稀有 token、专业术语、低频表达也值得关注。</p>
+<p>因为这些位置上的概率边界，往往没有常见 token 那么稳定。</p>
+<p>这些都不是固定规律。</p>
+<p>不同模型、不同量化方法，表现可能完全不同。</p>
+<p>但也正因为这样，“质量损失”这个说法其实太粗了。</p>
+<h2 id="对-Agent-来说，小误差的代价会被放大"><a href="#对-Agent-来说，小误差的代价会被放大" class="headerlink" title="对 Agent 来说，小误差的代价会被放大"></a>对 Agent 来说，小误差的代价会被放大</h2><p>普通文本生成里，一个 token 变了，结果可能只是某句话换了一种说法。</p>
+<p>Agent 场景不一样。</p>
+<p>一个 token 可能对应一个真实动作。</p>
+<p>比如：</p>
+<pre><code class="language-text">用户请求
+    ↓
+LLM 选择 Tool
+    ↓
+Tool 修改外部状态
+    ↓
+LLM 读取 Tool Result
+    ↓
+LLM 再选择下一个 Tool
+</code></pre>
+<p>这个时候，模型已经不是单纯在生成文本。</p>
+<p>它正在参与一个会改变外部状态的反馈系统。</p>
+<p>如果量化让第一步 Tool Call 发生变化，后面所有 Observation 都可能跟着变。</p>
+<p>例如：</p>
+<pre><code class="language-text">FP16
+search_inventory
+→ inspect_item
+→ ask_user_confirmation
+→ purchase_item
+
+INT4
+search_inventory
+→ inspect_item
+→ purchase_item
+</code></pre>
+<p>从传统 NLP benchmark 的角度看，这两个模型都理解了任务。</p>
+<p>但从 Agent Evaluation 的角度看，其中一个模型漏掉了必须执行的确认步骤。</p>
+<p>所以我对这类说法一直比较谨慎：</p>
+<blockquote>
+<p>量化后保留了 99% 的原始性能。</p>
+</blockquote>
+<p>99% 的什么？</p>
+<p>Perplexity？</p>
+<p>Multiple Choice Accuracy？</p>
+<p>Human Preference？</p>
+<p>Tool Call Success？</p>
+<p>Constraint Satisfaction？</p>
+<p>End-to-End Task Completion？</p>
+<p>Safety Compliance？</p>
+<p>这些并不是同一个指标。</p>
+<p>量化可能几乎完全保住其中一个，同时让另一个明显变差。</p>
+<h2 id="“4-bit”-其实不是一个完整配置"><a href="#“4-bit”-其实不是一个完整配置" class="headerlink" title="“4-bit” 其实不是一个完整配置"></a>“4-bit” 其实不是一个完整配置</h2><p>还有一个很容易被忽略的问题：</p>
+<p>所谓“4-bit 模型”，并不是唯一的一种东西。</p>
+<p>你可以只量化权重，也可以连 Activation 一起量化。</p>
+<p>可以用不同的 Group Size。</p>
+<p>可以让某些敏感 Layer 保持更高精度。</p>
+<p>可以做 Post-Training Quantization，也可以做 Quantization-Aware Training。</p>
+<p>Calibration Data 也会影响最终结果。</p>
+<p>大致可以这样理解：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>优点</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FP16 &#x2F; BF16</td>
+<td>质量稳定，部署简单</td>
+<td>显存高</td>
+</tr>
+<tr>
+<td>INT8</td>
+<td>压缩明显，通常比较稳妥</td>
+<td>显存收益不如 4-bit</td>
+</tr>
+<tr>
+<td>4-bit Weight-only</td>
+<td>显存下降非常明显</td>
+<td>对量化方法更敏感</td>
+</tr>
+<tr>
+<td>Mixed Precision</td>
+<td>可以保护敏感部分</td>
+<td>配置更复杂</td>
+</tr>
+<tr>
+<td>Quantization-Aware Training</td>
+<td>模型能适应低精度</td>
+<td>需要额外训练和算力</td>
+</tr>
+</tbody></table>
+<p>Outlier 是这里面一个很典型的问题。</p>
+<p>假设某个 Group 里绝大多数权重都在 -0.2 到 0.2 之间，但有一个值突然到了 4.8。</p>
+<p>如果整组共用同一个 Scale，那么这个 4.8 会占掉很大一部分可表示范围。</p>
+<p>结果就是，大量原本分布很密集的小权重，只能用更粗的间隔表示。</p>
+<p>Group-wise Quantization 和一些 Outlier-aware 方法，本质上就是在处理类似问题。</p>
+<p>所以两个人都说：</p>
+<blockquote>
+<p>我测了 4-bit 模型。</p>
+</blockquote>
+<p>实际上，他们测的可能根本不是同一种量化配置。</p>
+<h2 id="Benchmark-说没问题，生产环境未必同意"><a href="#Benchmark-说没问题，生产环境未必同意" class="headerlink" title="Benchmark 说没问题，生产环境未必同意"></a>Benchmark 说没问题，生产环境未必同意</h2><p>如果是实际部署，我最不放心的流程大概是：</p>
+<pre><code class="language-text">1. 跑 FP16 benchmark
+2. 跑 INT4 benchmark
+3. 比较平均分
+4. 上线
+</code></pre>
+<p>这个流程没有错。</p>
+<p>只是它回答的问题太少。</p>
+<p>我更愿意额外做一套和真实应用高度相关的小型测试集。</p>
+<p>如果是 Agent，我至少会检查：</p>
+<pre><code class="language-text">✓ Tool 是否选对
+✓ Required Arguments 是否完整
+✓ Forbidden Tools 是否被避免
+✓ 需要确认时是否真的确认
+✓ JSON Schema 是否合法
+✓ 多步指令是否完整执行
+✓ Long-context Evidence 是否正确使用
+✓ 多次运行是否稳定
+</code></pre>
+<p>然后让 FP16 和量化模型跑完全相同的 Prompt IDs。</p>
+<p>我想看的不只是“差了多少”。</p>
+<p>我更想知道“具体差在哪里”。</p>
+<p>如果可以，我还会看一下决策 Margin。</p>
+<p>一个模型可能还答对了某道题，但从原来很明确的 0.8 vs 0.1，变成了 0.51 vs 0.49。</p>
+<p>输出暂时没错。</p>
+<p>但鲁棒性可能已经下降了。</p>
+<p>另外，我也不会只测 Greedy Decoding。</p>
+<p>Sampling、长输出、多轮 Agent Loop，都更容易暴露这类局部不稳定。</p>
+<h2 id="真正部署-4-bit-之前，我会测什么"><a href="#真正部署-4-bit-之前，我会测什么" class="headerlink" title="真正部署 4-bit 之前，我会测什么"></a>真正部署 4-bit 之前，我会测什么</h2><p>我会把指标分成两组。</p>
+<p>第一组是系统层面：</p>
+<pre><code class="language-text">Memory
+├── Weight Memory
+├── Peak GPU Memory
+└── KV Cache Growth
+
+Latency
+├── Model Loading
+├── Time to First Token
+└── Tokens per Second
+
+Runtime
+├── Target Hardware
+├── Kernel Support
+└── Batch Size Behavior
+</code></pre>
+<p>第二组是行为层面：</p>
+<pre><code class="language-text">Behavior
+├── Task Success
+├── Instruction Following
+├── Structured Output
+├── Tool Selection
+├── Constraint Adherence
+├── Long-context Behavior
+└── Run-to-run Stability
+</code></pre>
+<p>只有两边一起看，结果才有意义。</p>
+<p>假设最后得到这样一组数据：</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th align="right">BF16</th>
+<th align="right">INT8</th>
+<th align="right">INT4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPU 显存</td>
+<td align="right">15.2 GB</td>
+<td align="right">8.6 GB</td>
+<td align="right">5.1 GB</td>
+</tr>
+<tr>
+<td>Decode Speed</td>
+<td align="right">42 tok&#x2F;s</td>
+<td align="right">51 tok&#x2F;s</td>
+<td align="right">57 tok&#x2F;s</td>
+</tr>
+<tr>
+<td>General Eval</td>
+<td align="right">78.4</td>
+<td align="right">78.3</td>
+<td align="right">77.9</td>
+</tr>
+<tr>
+<td>Tool Success</td>
+<td align="right">91.0%</td>
+<td align="right">90.8%</td>
+<td align="right">87.4%</td>
+</tr>
+<tr>
+<td>Valid JSON</td>
+<td align="right">98.7%</td>
+<td align="right">98.5%</td>
+<td align="right">94.1%</td>
+</tr>
+</tbody></table>
+<p>这些数字是虚构的。</p>
+<p>但我真正想看的，就是这种结果。</p>
+<p>因为只有这样，Trade-off 才真正清楚。</p>
+<p>如果做的是一个跑在笔记本上的离线总结工具，INT4 可能非常划算。</p>
+<p>但如果模型是一个会调用真实工具、修改外部状态的 Agent，那么为了省几 GB 显存，牺牲几个百分点的 Tool Reliability，可能就完全不值得。</p>
+<p>不存在一种永远正确的精度。</p>
+<p>只有一种最适合当前系统约束的精度。</p>
+<h2 id="我现在更愿意把量化当成一次模型变更"><a href="#我现在更愿意把量化当成一次模型变更" class="headerlink" title="我现在更愿意把量化当成一次模型变更"></a>我现在更愿意把量化当成一次模型变更</h2><p>这是我觉得最有用的一个判断。</p>
+<p>量化看起来很像纯粹的基础设施优化。</p>
+<p>像是换一个 Kernel、换一个 Runtime、换一个容器镜像。</p>
+<p>但实际上：</p>
+<p><strong>权重变了。</strong></p>
+<p>所以，模型也变了。</p>
+<p>变化通常不大。</p>
+<p>但已经足够让我不再把量化模型看成“同一个模型，只是更省显存”。</p>
+<p>我更愿意把它当成一个新的 Checkpoint。</p>
+<p>这意味着，和业务真正相关的评估应该重新跑一遍。</p>
+<p>不是把网上所有 benchmark 全部重跑。</p>
+<p>而是重新验证那些系统真正依赖的能力。</p>
+<p>如果系统依赖 Function Calling，那就专门测 Function Calling。</p>
+<p>如果系统依赖长上下文，就专门测 Long-context Retrieval。</p>
+<p>如果 Safety Constraint 很重要，就专门测这些约束。</p>
+<p>如果量化的目标是降低延迟，那就直接在目标硬件上测。</p>
+<p>不要因为 bit 数变少，就默认它一定更快。</p>
+<p>量化最容易让人掉进的坑，其实很简单：</p>
+<p>显存确实变小了，于是我们下意识觉得其他东西也应该差不多，甚至一起变好。</p>
+<p>现实通常没这么整齐。</p>
+<h2 id="4-bit-不会让模型“笨四倍”"><a href="#4-bit-不会让模型“笨四倍”" class="headerlink" title="4-bit 不会让模型“笨四倍”"></a>4-bit 不会让模型“笨四倍”</h2><p>把 FP16 模型压到 4-bit，当然不等于模型直接丢掉了四分之三的能力。</p>
+<p>神经网络对数值近似的容忍度其实很高。</p>
+<p>如果不是这样，激进量化根本不会这么好用。</p>
+<p>但这种“看起来基本没事”的稳定性，有时候反而更容易让人放松警惕。</p>
+<p>真正有意思的退化，很少长这样：</p>
+<blockquote>
+<p>模型突然不会说话了。</p>
+</blockquote>
+<p>更多时候，它会是：</p>
+<blockquote>
+<p>主任务还能做，但某个附加约束更容易被忽略。</p>
+</blockquote>
+<p>或者：</p>
+<blockquote>
+<p>Benchmark 几乎没变，但两个版本在不少具体样本上做出了不同选择。</p>
+</blockquote>
+<p>或者：</p>
+<blockquote>
+<p>显存下降了 60%，但目标 GPU 对这个量化格式支持一般，所以延迟没怎么改善。</p>
+</blockquote>
+<p>又或者，在 Agent 场景里：</p>
+<blockquote>
+<p>一切看起来都很正常，直到某一步两个 token 本来就差不多，一个很小的数值变化让模型选了另一个 Tool，后面的整条轨迹也跟着变了。</p>
+</blockquote>
+<p>所以，如果要回答“LLM 量化之后到底损失了什么”，我觉得最值得关注的并不是“智能”本身。</p>
+<p><strong>更可能先发生变化的，是决策余量、行为稳定性，以及我们对“它还是不是同一个模型”的那种确定感。</strong></p>
+<hr>
+<h2 id="首页摘要"><a href="#首页摘要" class="headerlink" title="首页摘要"></a>首页摘要</h2><p>量化可以大幅降低 LLM 的显存占用，而 benchmark 分数几乎不变。但 Tool Calling、结构化输出、延迟和行为稳定性，往往不会以同样的方式变化。</p>
+<h2 id="Tags"><a href="#Tags" class="headerlink" title="Tags"></a>Tags</h2><p><code>LLM</code> · <code>量化</code> · <code>模型优化</code> · <code>LLM Evaluation</code> · <code>AI Agent</code> · <code>Inference</code> · <code>Machine Learning Systems</code></p>
+
+	</div>
+
+	<div class="page-template-comments">
+		
+	</div>
+</div>
+
+<div class="paginator">
+	
+</div>
+  
+			</div>
+
+			
+		</div>
+
+		<div class="main-content-footer">
+			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2026&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">Zhaokun Wang</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span data-i18n="site_posts" data-i18n-arg="17">
+                        共撰写了 17 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://cn.vercount.one/js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.5</a></span>
+        </div>
+        
+        
+            <div>
+                <span data-i18n="runtime">博客已运行</span> <span class="odometer" id="runtime_days" ></span> <span data-i18n="days">天</span> <span class="odometer" id="runtime_hours"></span> <span data-i18n="hours">小时</span> <span class="odometer" id="runtime_minutes"></span> <span data-i18n="minutes">分钟</span> <span class="odometer" id="runtime_seconds"></span> <span data-i18n="seconds">秒</span>
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+		</div>
+	</div>
+
+	
+
+	<div class="right-side-tools-container">
+		<div class="side-tools-container">
+	<ul class="hidden-tools-list">
+		<li class="right-bottom-tools tool-translate-de flex justify-center items-center" title="翻译为德语">
+			<span class="translate-lang-label">DE</span>
+		</li>
+
+		<li class="right-bottom-tools tool-translate-zh flex justify-center items-center" title="翻译为中文">
+			<span class="translate-lang-label">文</span>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-plus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+			<i class="fa-regular fa-magnifying-glass-minus"></i>
+		</li>
+
+		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+			<i class="fa-regular fa-moon"></i>
+		</li>
+
+		<!-- rss -->
+		
+
+		
+
+		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+			<i class="fa-regular fa-arrow-down"></i>
+		</li>
+	</ul>
+
+	<ul class="visible-tools-list">
+		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+			<i class="fa-regular fa-cog fa-spin"></i>
+		</li>
+		
+		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+			<i class="arrow-up fas fa-arrow-up"></i>
+			<span class="percent"></span>
+		</li>
+		
+		
+	</ul>
+</div>
+	</div>
+
+	<div class="image-viewer-container">
+	<img src="">
+</div>
+
+	
+
+</main>
+
+
+
+<script src="/js/build/libs/Swup.min.js"></script>
+
+<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+	
+<script src="/js/build/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/build/utils.js" type="module"></script>
+
+<script src="/js/build/main.js" type="module"></script>
+
+<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/build/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/build/tools/runtime.js"></script>
+
+    
+<script src="/js/build/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/build/libs/Typed.min.js"></script>
+
+  
+<script src="/js/build/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+    
+<script src="/js/build/libs/anime.min.js"></script>
+
+
+
+
+
+    
+<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
+
+<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
+
+
+<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
+
+
+
+
+
+	<script src="/js/ui-language-switcher.js" defer></script>
+	<script src="/js/immersive-translate.js" defer></script>
+	
+</body>
+
+</html>
