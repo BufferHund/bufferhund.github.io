@@ -51,6 +51,7 @@ relative_link: false
 future: true
 syntax_highlighter: highlight.js
 highlight:
+  enable: false
   line_number: true
   auto_detect: false
   tab_replace: ''
@@ -60,6 +61,13 @@ prismjs:
   preprocess: true
   line_number: true
   tab_replace: ''
+
+# Use codemirror instead of highlight js for better color syntax
+# if you want more language support check the modes list at official website
+# modes see: https://codemirror.net/mode/
+# see https://codemirror.net/
+codemirror:
+  modes: [ 'javascript', 'css', 'xml', 'htmlmixed', 'clike', 'php', 'shell', 'python' ]
 
 # Home page setting
 # path: Root path for your blogs index page. (default = '')
@@ -102,11 +110,17 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: redefine
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: git
   repo: https://github.com/BufferHund/bufferhund.github.io.git
-  branch: main
+  branch: blog
+
+# i18n 静态翻译版本（translations/<lang>/ 目录，生成的 URL 前缀 <lang>/）
+i18n:
+  languages:
+    - zh-CN
+    - de
