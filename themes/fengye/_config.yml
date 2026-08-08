@@ -1,0 +1,108 @@
+# Header
+nav:
+  home:
+    path: ./index
+    icon: mingcute:home-2-fill
+    text: Home
+  about:
+    path: ./about
+    icon: mingcute:user-info-fill
+    text: About 
+  # Home: /index
+  posts:
+    path: ./archives
+    icon: mingcute:inbox-fill
+    text: Posts
+  # publications:
+  #   path: ./publications
+  #   icon: mingcute:science-fill
+  #   text: Publications
+  # Projects: /projects
+
+  projects:
+    path: ./projects
+    icon: mingcute:science-fill
+    text: Projects
+
+  # categories:
+  #   path: ./categories
+  #   icon: mingcute:classify-2-fill
+  #   text: Categories
+  # tags:
+  #   path: ./tags
+  #   icon: mingcute:tag-fill
+  #   text: Tags
+
+
+
+  # To add a new page, use hexo new page, then add another entry below.
+  # Each entry MUST have a path. In addition, it will render icon and/or text
+  # if they are provided. It will be an empty button if none of these are 
+  # provided.
+
+email: wang@cl.uni-heidelberg.de
+my_location: Heidelberg, Germany
+cv_path: /pdf/cv.pdf
+cv_last_update_date: October, 2025
+show_featured_posts: true
+year_align_center: false
+
+# favicon
+favicon: /favicon.ico
+
+# logo
+portrait: /images/logo.svg  # Your profile image here
+show_profile_image: true
+
+# links
+links:
+  Github:
+    link: https://github.com/BufferHund
+    icon: mingcute:github-fill
+  # ZhiHu:
+  #   link: https://www.zhihu.com/people/chen-ying-fa-34
+  #   icon: ri:zhihu-line
+  LinkedIn:
+    link: https://www.linkedin.com/in/zhaokun-wang-8802452a9
+    icon: ri:linkedin-box-fill
+
+  Mail:
+    link: mailto:wang@cl.uni-heidelberg.de
+    icon: ri:mail-fill
+  # Instagram:
+  #   link: https://www.instagram.com/torchhund?igsh=M2MxaGlxNDM4MGhm&utm_source=qr
+  #   icon: ri:instagram-fill
+
+ 
+  # You can add more links below using the format above.
+
+# analytics
+google_analytics:
+baidu_analytics:
+
+# mathjax
+fancybox: true
+
+# mathjax
+mathjax: true
+
+# echarts
+echarts: true
+
+# busuanzi
+busuanzi: true
+
+# mermaid
+mermaid:
+  enable: true
+  # Available themes: default | dark | forest | neutral
+  theme: default
+
+# giscus
+giscus:
+  enable:
+  repo:
+  repo_id:
+  category:
+  category_id:
+  mapping:

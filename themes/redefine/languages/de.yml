@@ -1,0 +1,96 @@
+# ----------------------------------------
+# Site Translation
+# ----------------------------------------
+search: Suchen...
+toc: Auf dieser Seite
+prev: Zurück
+next: Weiter
+prev_posts: Vorherige Beiträge
+next_posts: Nächste Beiträge
+page: Seite %d
+recent_posts: Neueste Beiträge
+share: Teilen
+powered_by: "ANGETRIEBEN VON %s"
+theme: THEME
+rss_feed: RSS-Feed
+category: Kategorie
+categories: Kategorien
+tag: Schlagwort
+tags: Schlagwörter
+post: Beitrag
+posts: Beiträge
+tagcloud: Schlagwörter-Wolke
+comment: Kommentar
+comments: Kommentare
+home: Start
+research: Forschung
+projects: Projekte
+talks: Vorträge
+archive: Archiv
+archives: Archive
+top: NACH OBEN
+sticky: Angeheftet
+go-back-home: Zurück zur Startseite
+
+
+# ----------------------------------------
+# Menu Translation
+# ----------------------------------------
+about: Über
+changelog: Änderungsprotokoll
+links: Links
+link: Link
+friends: Freunde
+friend: Freund
+timeline: Zeitleiste
+shuoshuo: Shuoshuo
+
+# ----------------------------------------
+# Website count
+# ----------------------------------------
+site_uv: BESUCHERZAHL
+site_pv: GESAMTSEITENAUFRUFE
+read_more: Weiterlesen
+wordcount: Wörter
+min2read: Min
+status: Status
+
+# ----------------------------------------
+# Footer
+# ----------------------------------------
+runtime: Blog online seit
+days: Tagen
+hours: Std
+minutes: Min
+seconds: Sek
+optimized_by: und optimiert von Evan
+rights: Alle Rechte vorbehalten
+site_posts: "Insgesamt %s Beiträge"
+site_wordcount: "Insgesamt %s Wörter"
+
+# ----------------------------------------
+# Post
+# ----------------------------------------
+copyright:
+  author: Autor
+  title: Titel
+  link: Link
+  create_time: Erstellt am
+  update_time: Aktualisiert am
+  license_title: Lizenz
+  license_content: "Dieses Werk ist lizenziert unter %s."
+  all_rights_reserved: "Alle Rechte vorbehalten &#169; %s"
+  public_domain: "Dieses Werk ist gemeinfrei."
+
+ago:
+  second: "vor %s Sekunden"
+  minute: "vor %s Minuten"
+  hour: "vor %s Stunden"
+  day: "vor %s Tagen"
+  week: "vor %s Wochen"
+  month: "vor %s Monaten"
+  year: "vor %s Jahren"
+
+create_time: Erstellt
+update_time: Aktualisiert
+expired: "Dieser Beitrag wurde vor %s Tagen verfasst, der Inhalt ist möglicherweise nicht mehr aktuell."

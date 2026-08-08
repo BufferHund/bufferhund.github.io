@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="<%= config.language %>">
+<%- partial('components/header/head') %>
+
+<body>
+	<%- body %>
+	<%- partial('components/scripts') %>
+	<script src="<%- url_for('/js/ui-language-switcher.js') %>" defer></script>
+	<script src="<%- url_for('/js/immersive-translate.js') %>" defer></script>
+	<% if (theme.plugins.aplayer.enable) { %>
+	<%- partial('components/plugins/aplayer') %>
+	<% } %>
+</body>
+
+</html>
